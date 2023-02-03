@@ -22,7 +22,7 @@ router.post('/register', async (req, res)=>{
         // const userExist = await employees.findOne({username : username})
         const userExist = await employees.findOne({email : email})
         if(userExist){
-            return res.status(422).json({error : 'email is already exist'}); 
+            return res.status(409).json({error : 'email is already exist'}); 
         }
         else if( password != cpassword){
             return res.status(422).json({error : 'password and confirm password doesnot match'});
@@ -31,7 +31,7 @@ router.post('/register', async (req, res)=>{
             const employee = new employees({username, email, password, mobile });
             //pass hashing
             await employee.save();  
-            res.status(201).json({message : "user registered successfully"});
+            res.status(201).json({message : 'user registered successfully'});
             
             //using promise 
             // employee.findOne({email : email}) //left email = db entity, right email = userfilled entity

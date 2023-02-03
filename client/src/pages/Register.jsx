@@ -10,7 +10,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useState, forwardRef } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Stack from "@mui/material/Stack";
-import MuiAlert from "@mui/material/Alert";
+import Alert from "@mui/material/Alert";
 import Slide from "@mui/material/Slide";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -32,9 +32,9 @@ const schema = yup
   })
   .required();
 
-const Alert = forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
+// const Alert = forwardRef(function Alert(props, ref) {
+//   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+// });
 
 const darkTheme = createTheme({
   palette: {
@@ -100,17 +100,19 @@ export default function Register() {
 
     const data = await res.json();
 
-    if (data.status === 402 || !data) {
-      window.alert("Invalid Credentials");
-      console.log("Invalid Credentials");
+    // if (data.status === 402 || !data) {
+    //   window.alert("Invalid Credentials");
+    //   console.log("Invalid Credentials");
 
+    // }
+    if (data.status === 422 || data.status === 409 || !data.message) {
+      window.alert(data.error);
+      // BasicAlerts(data.error, "error");
     }
     else {
-      window.alert("Registered Successfully");
-      console.log("Registered Successfully");
+      window.alert("Successfully Registered");
       navigate("/login");
     }
-
 
   }
 
@@ -132,7 +134,7 @@ export default function Register() {
 
   return (
     <>
-      <Snackbar
+      {/* <Snackbar
         open={open}
         autoHideDuration={3000}
         onClose={handleClose}
@@ -142,7 +144,7 @@ export default function Register() {
         <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
           Failed! Enter correct username and password.
         </Alert>
-      </Snackbar>
+      </Snackbar> */}
       <div
         style={{
           backgroundImage: `url(${bgimg})`,

@@ -14,14 +14,15 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import { useState, forwardRef } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Stack from "@mui/material/Stack";
-import MuiAlert from "@mui/material/Alert";
+// import MuiAlert from "@mui/material/Alert";
 import Slide from "@mui/material/Slide";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import BasicAlerts from "./BasicAlerts";
 
-const Alert = forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
+// const Alert = forwardRef(function Alert(props, ref) {
+//   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+// });
 
 const darkTheme = createTheme({
   palette: {
@@ -83,15 +84,17 @@ export default function Login() {
     });
 
     const data = await res.json();
-    if (data.status === 400 || !data) {
-      window.alert("Invalid Credentials");
+    if (!data.message) {
+      window.alert(data.error);
       console.log(data.error);
+      // <BasicAlerts e={data.error} />;
       
     }
     else {
-      // window.alert("Login Successfully");
+      window.alert("Login Successfully");
       console.log("Login Successfully");
-      setOpen(true);
+      navigate("/home");
+      // setOpen(true);
       // return (
       // <Snackbar
       //   open={open}
@@ -114,7 +117,6 @@ export default function Login() {
       return;
     }
     setOpen(false);
-    navigate("/home");
   };
 
   function TransitionLeft(props) {
@@ -123,7 +125,7 @@ export default function Login() {
 
   return (
     <>
-      <Snackbar
+      {/* <Snackbar
         open={open}
         autoHideDuration={3000}
         onClose={handleClose}
@@ -133,7 +135,7 @@ export default function Login() {
         <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
           You have successfully logged in!
         </Alert>
-      </Snackbar>
+      </Snackbar> */}
       <div
         style={{
           backgroundImage: `url(${bgimg})`,
