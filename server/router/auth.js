@@ -4,6 +4,8 @@ const employees = require('../model/userSchema');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('../database/connection');
+const authenticate = require('../middleware/authenticate');
+
 
 router.get('/', (req, res) => res.send('Hello World! router'));
 
@@ -86,5 +88,14 @@ router.post('/signin', async (req, res) => {
         console.log(err);
     }
 })
+
+
+// Home Page
+// router.get('/', authenticate  ,async (req, res) => {
+//     console.log("Home Page");
+//     console.log(req.rootEmployee);
+//     res.send(req.rootEmployee);
+// });
+
 
 module.exports = router;

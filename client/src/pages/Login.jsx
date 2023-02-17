@@ -93,7 +93,7 @@ export default function Login() {
     else {
       window.alert("Login Successfully");
       console.log("Login Successfully");
-      navigate("/home");
+      navigate("/");
       // setOpen(true);
       // return (
       // <Snackbar
@@ -271,7 +271,7 @@ export default function Login() {
                                   cursor: "pointer",
                                 }}
                                 onClick={() => {
-                                  navigate("/");
+                                  navigate("/register");
                                 }}
                               >
                                 Create an Account

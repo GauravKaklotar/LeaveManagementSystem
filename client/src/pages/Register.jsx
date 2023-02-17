@@ -17,10 +17,10 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-// import InputLabel from "@mui/material/InputLabel";
-// import MenuItem from "@mui/material/MenuItem";
-// import FormControl from "@mui/material/FormControl";
-// import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 
 const schema = yup
   .object({
@@ -67,7 +67,7 @@ export default function Register() {
   const vertical = "top";
   const horizontal = "right";
   const navigate = useNavigate();
-  // const [gender, setGender] = useState("");
+  const [gender, setGender] = useState("");
   const {
     register,
     handleSubmit,
@@ -123,10 +123,10 @@ export default function Register() {
     setOpen(false);
   };
 
-  // const handleChange = (event) => {
-  //   // errors.gender = event.target.value;
-  //   setGender(event.target.value);
-  // };
+  const handleChange = (event) => {
+    // errors.gender = event.target.value;
+    setGender(event.target.value);
+  };
 
   function TransitionLeft(props) {
     return <Slide {...props} direction="left" />;
@@ -269,22 +269,22 @@ export default function Register() {
                             </span>
                           )}
                         </Grid>
-                        {/* <Grid item xs={6}>
+                        <Grid item xs={12} sx={{ml:"3em", mr:"4em"}}>
                           <FormControl fullWidth>
                             <InputLabel  id="demo-simple-select-label">
-                              Gender
+                              Choose Role
                             </InputLabel>
                             <Select
                               labelId="demo-simple-select-label"
                               id="demo-simple-select"
                               value={gender}
-                              label="Gender"
+                              label="Choose Role"
                               size="small"
                               onChange={handleChange}
                             >
-                              <MenuItem value="male">Male</MenuItem>
-                              <MenuItem value="Female">Female</MenuItem>
-                              <MenuItem value="Other">Other</MenuItem>
+                              <MenuItem value="SDE1">SDE1</MenuItem>
+                              <MenuItem value="SDE2">SDE2</MenuItem>
+                              <MenuItem value="SDE3">SDE3</MenuItem>
                             </Select>
                           </FormControl>
                           {errors.gender && (
@@ -292,7 +292,7 @@ export default function Register() {
                               {errors.gender?.message}
                             </span>
                           )}
-                        </Grid> */}
+                        </Grid>
                         <Grid item xs={12} sx={{ ml: "5em", mr: "5em" }}>
                           <Button
                             type="submit"
