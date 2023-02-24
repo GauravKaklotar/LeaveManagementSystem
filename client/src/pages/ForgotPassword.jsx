@@ -1,3 +1,4 @@
+// import { React} from 'react';
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import bg from "./bg/forgetPassword.svg";
@@ -9,8 +10,6 @@ import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import { useState, forwardRef } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Stack from "@mui/material/Stack";
@@ -18,6 +17,9 @@ import MuiAlert from "@mui/material/Alert";
 import Slide from "@mui/material/Slide";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+
+
+// import { MuiOtpInput } from 'mui-one-time-password-input'
 
 const Alert = forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -48,14 +50,14 @@ const center = {
 
 export default function ForgotPassword() {
   const [open, setOpen] = useState(false);
-  const [remember, setRemember] = useState(false);
+  // const [remember, setRemember] = useState(false);
   const vertical = "top";
   const horizontal = "right";
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
-    watch,
+    // watch,
     formState: { errors },
   } = useForm();
 
@@ -74,6 +76,7 @@ export default function ForgotPassword() {
   function TransitionLeft(props) {
     return <Slide {...props} direction="left" />;
   }
+  
 
   return (
     <>
@@ -85,7 +88,7 @@ export default function ForgotPassword() {
         anchorOrigin={{ vertical, horizontal }}
       >
         <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
-          Password reset link sent.
+          OTP has been sent to your email.
         </Alert>
       </Snackbar>
       <div

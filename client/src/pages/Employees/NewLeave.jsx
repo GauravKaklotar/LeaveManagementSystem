@@ -1,13 +1,13 @@
-import { React, useState } from 'react'
+import React, { useState, useRef, useMemo } from 'react';
+import JoditEditor from 'jodit-react';
+
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
-
 import {
   MDBValidation,
   MDBValidationItem,
   MDBInput,
   MDBBtn,
-  MDBInputGroup,
   MDBTextArea,
 } from 'mdb-react-ui-kit';
 import { Typography } from '@mui/material';
@@ -21,28 +21,13 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   ...theme.mixins.toolbar,
 }));
 
-// const NewLeave = () => {
-//   return (
-//     <>
-//     <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-//         <DrawerHeader />
-//         <h2>New Leave</h2>
-//       </Box>
-//     </>
-//   )
-// }
-
-// export default NewLeave
-
-
-
 export default function NewLeave() {
 
   const [formValue, setFormValue] = useState({
     fname: '',
     lname: '',
-    email: '',
-    title: '',
+    password: '',
+    LeaveType: '',
     state: '',
     noOfDays: '',
     startDate: '',
@@ -53,6 +38,21 @@ export default function NewLeave() {
   const onChange = (e) => {
     setFormValue({ ...formValue, [e.target.name]: e.target.value });
   };
+
+
+
+  // Jodit Editors
+  const editor = useRef(null);
+	const [content, setContent] = useState('');
+
+	// const config = useMemo(
+	// 	{
+	// 		readonly: false, // all options from https://xdsoft.net/jodit/doc/,
+	// 		placeholder: placeholder || 'Start typings...'
+	// 	},
+	// 	[placeholder]
+	// );
+
 
   return (
     <>
@@ -84,26 +84,42 @@ export default function NewLeave() {
                 label='Last name'
               />
             </MDBValidationItem>
-            <MDBValidationItem feedback='Please choose a username.' invalid className='col-md-4'>
-              <MDBInputGroup textBefore='@'>
-                <input
-                  type='text'
-                  className='form-control'
-                  id='validationCustomUsername'
-                  placeholder='Username'
-                  required
-                />
-              </MDBInputGroup>
+            <MDBValidationItem feedback='Password is required' invalid className='col-md-4'>
+              <MDBInput
+                value={formValue.password}
+                name='password'
+                onChange={onChange}
+                label='Password'
+                id='validationCustom02'
+                type='password'
+                required
+
+              />
             </MDBValidationItem>
-            <MDBValidationItem className='col-md-6' feedback='Please provide a Title.' invalid>
-              <MDBInput className='mt-sm-2'
+            <MDBValidationItem className='col-md-6' feedback='Please Select Leave Type.' invalid>
+              {/* <MDBInput className='mt-sm-2'
                 value={formValue.title}
                 name='title'
                 onChange={onChange}
-                id='validationCustom03'
+                id='select'
                 required
                 label='Title'
+              /> */}
+              <MDBInput
+                className='mt-sm-2'
+                value={formValue.LeaveType}
+                name='LeaveType'
+                list='Leave Type'
+                label="Leave Type"
+                id='validationCustom02'
+                onChange={onChange}
+                required
               />
+              <datalist id='Leave Type'>
+                <option>Casual Leave</option>
+                <option>Medical Leave</option>
+                <option>Other</option>
+              </datalist>
             </MDBValidationItem>
             <MDBValidationItem className='col-md-6' feedback='This Field is requied.' invalid>
               <MDBInput className='mt-sm-2'
@@ -139,15 +155,24 @@ export default function NewLeave() {
               />
             </MDBValidationItem>
             <MDBValidationItem feedback='Please enter a leave reason.' invalid className='col-md-12'>
-              <MDBTextArea className='mt-sm-2'
+              <JoditEditor
+                ref={editor}
+                value={content}
+                // config={config}
+                tabIndex={1} // tabIndex of textarea
+                onBlur={newContent => setContent(newContent)} // preferred to use only this option to update the content for performance reasons
+                onChange={newContent => { }}
+              />
+              
+              {/* <MDBTextArea className='mt-sm-2'
                 label='Leave Reason'
-                value={formValue.leaveReason}
+                value={formValue.leaveReason}`
                 name='leaveReason'
                 onChange={onChange}
                 id='textAreaExample'
                 required
                 rows={4}
-              />
+              /> */}
             </MDBValidationItem>
             <div className='col-12 mt-sm-4'>
               <center><MDBBtn type='submit'>Submit</MDBBtn></center>
