@@ -1,18 +1,30 @@
+//for use of => import express from 'express'
+//add 'type':'module' in pckg.json
+//bcs bydefault it will use commonJS that cant suppport import stment.
+//all imports
 const express = require('express');
-const dotenv = require('dotenv');
+const cors = require('cors');
+const morgan = require('morgan');
 const mongoose = require('mongoose');
-const app = express();
-dotenv.config({path:'./config.env'});  
+
+//env
+const dotenv = require('dotenv');
+const path = require('path');
+dotenv.config({ path: path.resolve(__dirname, './config/config.env') });
+
+const app = express({extended: true});
+
+//connection
 require('./database/connection');
 
+//middleware
 app.use(express.json());
-//linking of router
-app.use(require('./router/auth'));
-const PORT = process.env.PORT;
-    
-const middleware = (req, res, next) =>{
-    console.log("middleware");
-    next();
-}
+app.use(cors());
+app.use(morgan('tiny'));
+app.disable('x-powered-by'); 
 
-app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`)); 
+//linking of routes 
+app.use('/api', require('./router/auth'));
+
+const PORT = process.env.PORT;
+app.listen(PORT, () => console.log(`LMS app listening on port ${PORT}!`)); 

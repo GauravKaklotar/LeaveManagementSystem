@@ -65,7 +65,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 
-const PendingLeave = () => {
+const RejectedLeave = () => {
   const navigate = useNavigate();
 
   const [page, setPage] = React.useState(0);
@@ -87,7 +87,7 @@ const PendingLeave = () => {
       <Box component="main" sx={{flexGrow: 1, p: 3, boxShadow: 5, mr: "2em", ml: "2em", mt: "2em"}}>
         {/* <DrawerHeader /> */}
         <Typography gutterBottom variant="h5" component="div" fontWeight={700} sx={{ color: "#007bff", textAlign: "center" }}>
-          Pending Leave
+          Rejected Leave
         </Typography>
         <Box sx={{ height: 3 + "vh" }} />
         <form className='d-flex input-group w-auto col-md-4'>
@@ -164,4 +164,4 @@ const PendingLeave = () => {
   )
 }
 
-export default PendingLeave
+export default RejectedLeave

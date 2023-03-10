@@ -73,8 +73,8 @@ export default function Login() {
 
     const { email, password } = e;
 
-    const res = await fetch("/signin", {
-      method : "POST",
+    const res = await fetch('/api/login', {
+      method : "post",
       headers: { 
         "content-type": "application/json",
       },

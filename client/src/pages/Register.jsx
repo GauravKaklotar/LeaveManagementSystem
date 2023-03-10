@@ -90,7 +90,7 @@ export default function Register() {
     console.log(e);
 
     const { username, email, password, confirmpassword, mobile } = e;
-    const res = await fetch("/register", {
+    const res = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -282,9 +282,9 @@ export default function Register() {
                               size="small"
                               onChange={handleChange}
                             >
-                              <MenuItem value="SDE1">SDE1</MenuItem>
-                              <MenuItem value="SDE2">SDE2</MenuItem>
-                              <MenuItem value="SDE3">SDE3</MenuItem>
+                              <MenuItem value="DEVELOPER">DEVELOPER</MenuItem>
+                              <MenuItem value="DESIGNER">DESIGNER</MenuItem>
+                              <MenuItem value="TESTER">TESTER</MenuItem>
                             </Select>
                           </FormControl>
                           {errors.gender && (

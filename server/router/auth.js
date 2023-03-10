@@ -1,101 +1,96 @@
-const express = require('express');
+const express = require('express'); 
 const router = express.Router();
-const employees = require('../model/userSchema');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 require('../database/connection');
-const authenticate = require('../middleware/authenticate');
+const verifyUser = require('../middleware/verifyUser');
+const userController = require('../controller/userController');
+const leaveTypeController = require('../controller/leaveTypeController');
+const leaveController = require('../controller/leaveController');
+// const cookieParser = require("cookie-parser");
+// router.use(cookieParser());
 
-
-router.get('/', (req, res) => res.send('Hello World! router'));
-
-//reg route
-router.post('/register', async (req, res)=>{
-    const {username, email, password, cpassword, mobile } = req.body;
-    // res.json({message : req.body}); //for thunderclient response
-    //message ->db entity
-    //req.body ->userfilled property
-
-    if( !username || !email || !password || !cpassword || !mobile ){
-        return res.status(422).json({error : 'plz fill the all field'});
-    }
-    
-    try{
-        // const userExist = await employees.findOne({username : username})
-        const userExist = await employees.findOne({email : email})
-        if(userExist){
-            return res.status(409).json({error : 'email is already exist'}); 
-        }
-        else if( password != cpassword){
-            return res.status(422).json({error : 'password and confirm password doesnot match'});
-        }
-        else{
-            const employee = new employees({username, email, password, mobile });
-            //pass hashing
-            await employee.save();  
-            res.status(201).json({message : 'user registered successfully'});
-            
-            //using promise 
-            // employee.findOne({email : email}) //left email = db entity, right email = userfilled entity
-            // .then((userExist)=> {
-            //     if(userExist){
-            //         flag = true;
-            //         return res.status(422).json({error : 'email is already exist'}); 
-            //     }
-        
-            // })
-        }
-    }
-    catch(err){
-        console.log(err);
-    }
-})
-// router.get('/signup', (req, res) => res.send('sign up World!'));
-
+//register route
+router.post('/register', userController.registerUser);
 //login route
-router.post('/signin', async (req, res) => {
-    // console.log(req.body);
-    // res.json({message : "yeh"});
+router.post('/login', userController.loginUser);
 
-    try{
-        let token;
-        const {email, password} = req.body;
-        if( !email || !password){
-            return res.status(400).json({error : "Plz fill the data"});
-        }
+//employee ///
 
-        const employeeLogin = await employees.findOne({email: email});
-        if(!employeeLogin){
-            res.json({error : "No user Exist"});
-            // console.log(employeeLogin);
-        }
-        const isMatch = await bcrypt.compare(password, employeeLogin.password);
-        token = await employeeLogin.generateAuthToken();
-        // console.log(token);
-        res.cookie("jwttoken", token, {
-            expires: new Date(Date.now() + 25892000000),
-            httpOnly: true //bcs otherwise its run only on secure
-        });
-        
-        if(!isMatch){
-            res.json({error : "Plz enter correct password"});
-        }
-        else{
-            res.json({message : "User login successfully"});
-        }
+//all users -admin
+router.get('/user/allUsers',verifyUser.verifyUser, verifyUser.verifyAdmin, userController.allUsers);
+//user detail- admin
+router.get('/user/getUser/:id',verifyUser.verifyUser, verifyUser.verifyAdmin, userController.getUser);
+//update user-user
+router.put('/user/updateUser',verifyUser.verifyUser, userController.updateUser);
+//update password-user
+router.put('/user/updatePassword',verifyUser.verifyUser, userController.updatePassword);
+//delete user by user-admin
+router.delete('/user/deleteUser/:id',verifyUser.verifyUser, verifyUser.verifyAdmin, userController.deleteUser);
+// //delete user by admin
+// router.delete('/user/deleteUser/:id', verifyUser.verifyAdmin, userController.deleteUser);
 
-    }catch(err){
-        console.log(err);
-    }
-})
+//forget pass otp 
+router.post('/sendOtp/:email', userController.sendOtp);
+//verifyotp
+router.get('/verifyOtp/:email/:otp', userController.verifyPassOtp);
+//reset pass
+router.post('/resetPassword/:email/:otp', userController.resetPassword);
 
 
-// Home Page
-// router.get('/', authenticate  ,async (req, res) => {
-//     console.log("Home Page");
-//     console.log(req.rootEmployee);
-//     res.send(req.rootEmployee);
-// });
+//leaveType///////
+
+//leaveType create -admin
+router.post('/leaveType/createLeaveType',verifyUser.verifyUser, verifyUser.verifyAdmin, leaveTypeController.leaveTypeCreate);
+//leavetype all -admin
+router.get('/leaveType/allLeaveTypes',verifyUser.verifyUser, verifyUser.verifyAdmin, leaveTypeController.allLeaveTypes);
+//leavetype all-admin
+router.get('/leaveType/getLeaveType/:id',verifyUser.verifyUser, verifyUser.verifyAdmin, leaveTypeController.getLeaveType);
+//leavetype all -admin
+router.put('/leaveType/updateLeaveType/:id', verifyUser.verifyUser, verifyUser.verifyAdmin, leaveTypeController.updateLeaveType);
+//leavetype all -admin
+router.delete('/leaveType/deleteLeaveType/:id', verifyUser.verifyUser, verifyUser.verifyAdmin, leaveTypeController.deleteLeaveType);
+
+//leave///
+
+//createleave -user/hod
+router.post('/leave/createLeave', verifyUser.verifyUser, leaveController.createLeave);
+
+//all leaves -user/hod/admin
+router.get('/leave/allLeaves', verifyUser.verifyUser, leaveController.allLeaves);
+
+//get leave -user/hod
+router.get('/leave/getLeave/:id', verifyUser.verifyUser, leaveController.getLeave);
+
+//update leave -user
+router.put('/leave/updateLeave/:id', verifyUser.verifyUser, leaveController.updateLeave);
+//update leave -hod
+router.put('/leave/updateLeaveByHod/:id', verifyUser.verifyUser, leaveController.updateLeaveByHod);
+
+//pending leaves -user
+router.get('/leave/pendingLeaves', verifyUser.verifyUser, leaveController.pendingLeaves);
+//pending leaves - hod
+router.get('/leave/pendingLeavesByHod', verifyUser.verifyUser, leaveController.pendingLeavesByHod);
+//pending leaves -admin
+router.get('/leave/pendingLeavesByAdmin', verifyUser.verifyUser, verifyUser.verifyAdmin, leaveController.pendingLeavesByAdmin);
+
+//approved leaves -user
+router.get('/leave/approvedLeaves', verifyUser.verifyUser, leaveController.approvedLeaves);
+//approved leaves - hod
+router.get('/leave/approvedLeavesByHod', verifyUser.verifyUser, leaveController.approvedLeavesByHod);
+//approved leaves -admin
+router.get('/leave/approvedLeavesByAdmin', verifyUser.verifyUser, verifyUser.verifyAdmin, leaveController.approvedLeavesByAdmin);
+
+//rejected leaves -user
+router.get('/leave/rejectedLeaves', verifyUser.verifyUser, leaveController.rejectedLeaves);
+//rejected leaves - hod
+router.get('/leave/rejectedLeavesByHod', verifyUser.verifyUser, leaveController.rejectedLeavesByHod);
+//rejected leaves -admin
+router.get('/leave/rejectedLeavesByAdmin', verifyUser.verifyUser, verifyUser.verifyAdmin, leaveController.rejectedLeavesByAdmin);
+
+//updateStatus -hod
+router.post('/leave/updateStatusByHod/:id', verifyUser.verifyUser, leaveController.updateStatusByHod);
+//updateStatus -admin
+router.post('/leave/updateStatusByAdmin/:id', verifyUser.verifyUser, verifyUser.verifyAdmin, leaveController.updateStatusByHod);
+
 
 
 module.exports = router;

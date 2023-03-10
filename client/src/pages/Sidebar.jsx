@@ -24,12 +24,14 @@ import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 import { useNavigate } from 'react-router-dom';
-import Dashboard from './Dashboard';
+import Dashboard from './Employees/Dashboard';
 import NewLeave from './Employees/NewLeave';
 
 import Settings from './Employees/Settings';
 import TrackLeave from './Employees/TrackLeave';
 import PendingLeave from './Employees/PendingLeave';
+import Leave from './Employees/Leave';
+import RejectedLeave from './Employees/RejectedLeave';
 
 
 
@@ -40,6 +42,8 @@ import Menu from '@mui/material/Menu';
 // import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import CallMergeIcon from '@mui/icons-material/CallMerge';
 
 
 const drawerWidth = 240;
@@ -143,10 +147,10 @@ export default function Sidebar() {
         setMobileMoreAnchorEl(null);
     };
 
-    const handleMenuClose = () => {
-        setAnchorEl(null);
-        handleMobileMenuClose();
-    };
+    // const handleMenuClose = () => {
+    //     setAnchorEl(null);
+    //     handleMobileMenuClose();
+    // };
 
     const handleMobileMenuOpen = (event) => {
         setMobileMoreAnchorEl(event.currentTarget);
@@ -170,30 +174,16 @@ export default function Sidebar() {
             open={isMobileMenuOpen}
             onClose={handleMobileMenuClose}
         >
-            <MenuItem onClick={handleProfileMenuOpen}>
-                <IconButton
-                    size="large"
-                    aria-label="account of current user"
-                    aria-controls="primary-search-account-menu"
-                    aria-haspopup="true"
-                    color="inherit"
-                >
-                    <AccountCircle />
-                </IconButton>
-                <p>Profile</p>
-            </MenuItem>
-            <MenuItem>
-                <IconButton
-                    size="large"
-                    aria-label="Sign out"
-                    color="inherit"
-                >
-                    <Badge>
-                        <ExitToAppIcon />
-                    </Badge>
-                </IconButton>
-                <p>Sign out</p>
-            </MenuItem>
+            <MenuItem onClick={()=>{
+                setAnchorEl(null);
+                navigate("/settings");
+                handleMobileMenuClose();
+            }}>Profile</MenuItem>
+            <MenuItem onClick={()=>{
+                setAnchorEl(null);
+                navigate("/login");
+                handleMobileMenuClose();
+            }}>Sign Out</MenuItem>
         </Menu>
     );
 
@@ -211,10 +201,21 @@ export default function Sidebar() {
                 horizontal: 'right',
             }}
             open={isMenuOpen}
-            onClose={handleMenuClose}
+            onClose={()=>{
+                setAnchorEl(null);
+                handleMobileMenuClose();
+            }}
         >
-            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Sign Out</MenuItem>
+            <MenuItem onClick={()=>{
+                setAnchorEl(null);
+                navigate("/settings");
+                handleMobileMenuClose();
+            }}>Profile</MenuItem>
+            <MenuItem onClick={()=>{
+                setAnchorEl(null);
+                navigate("/login");
+                handleMobileMenuClose();
+            }}>Sign Out</MenuItem>
         </Menu>
     );
 
@@ -306,7 +307,7 @@ export default function Sidebar() {
                 </List>
                 <Divider />
                 <List>
-                    {['New Leave', 'Pending Leave', 'Track Leave'].map((text, index) => (
+                    {['New Leave', 'Leave', 'Pending Leave', 'Rejected Leave'].map((text, index) => (
                         <ListItem key={text} disablePadding sx={{ display: 'block' }} onClick={() => setMenudata(menudata = text)}>
                             <ListItemButton
                                 sx={{
@@ -322,7 +323,7 @@ export default function Sidebar() {
                                         justifyContent: 'center',
                                     }}
                                 >
-                                    {index === 0 ? <AddIcon /> : index === 1 ? <PendingActionsIcon /> : <LocationSearchingIcon />}
+                                    {index === 0 ? <AddIcon /> : index === 1 ? <CallMergeIcon /> : index === 2 ? <PendingActionsIcon /> : <ThumbDownIcon />}
 
                                 </ListItemIcon>
                                 <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
@@ -379,8 +380,9 @@ export default function Sidebar() {
             <Box component="main" mx={{ flexGrow: 5, p: 2 }}>
                 {menudata === "Dashboard" ? <Dashboard /> : ""}
                 {menudata === "New Leave" ? <NewLeave /> : ""}
+                {menudata === "Leave" ? <Leave /> : ""}
                 {menudata === "Pending Leave" ? <PendingLeave /> : ""}
-                {menudata === "Track Leave" ? <TrackLeave /> : ""}
+                {menudata === "Rejected Leave" ? <RejectedLeave /> : ""}
                 {menudata === "Settings" ? <Settings /> : ""}
             </Box>
         </Box>

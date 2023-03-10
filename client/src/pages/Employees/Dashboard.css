@@ -1,0 +1,36 @@
+.paddingall {
+    padding: 10px 10px 10px 10px;
+}
+
+.leaveTitle {
+    font-weight: 600;
+}
+
+.leaveText {
+    font-weight: 100;
+}
+
+.iconStyle {
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+.gradient1 {
+    background: rgb(9, 9, 121);
+    background: linear-gradient(90deg, rgba(9, 9, 121, 1) 0%, rgba(50, 50, 150, 1) 30%, rgba(0, 212, 255, 1) 100%);
+}
+
+.gradient2 {
+    background: rgb(9, 82, 81);
+    background: linear-gradient(90deg, rgba(9, 82, 81, 1) 0%, rgba(43, 139, 137, 1) 42%, rgba(2, 246, 231, 0.8240546218487395) 100%);
+}
+
+.gradient3 {
+    background: rgb(23, 65, 7);
+    background: linear-gradient(90deg, rgba(23, 65, 7, 1) 0%, rgba(41, 167, 52, 1) 42%, rgba(17, 255, 136, 0.8240546218487395) 100%);
+}
+
+.gradient4 {
+    background: rgb(75, 9, 9);
+    background: linear-gradient(90deg, rgba(75, 9, 9, 1) 0%, rgba(162, 55, 84, 1) 42%, rgba(222, 92, 92, 0.8240546218487395) 100%);
+}

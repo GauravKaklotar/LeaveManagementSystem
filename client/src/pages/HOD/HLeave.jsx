@@ -20,7 +20,7 @@ import Button from "@material-ui/core/Button";
 
 import { MDBBtn } from 'mdb-react-ui-kit';
 
-import Navbar from './Navbar';
+import HNavbar from './HNavbar';
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -65,7 +65,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 
-const PendingLeave = () => {
+const HLeave = () => {
   const navigate = useNavigate();
 
   const [page, setPage] = React.useState(0);
@@ -83,11 +83,11 @@ const PendingLeave = () => {
 
   return (
     <>
-      <Navbar />
+      <HNavbar />
       <Box component="main" sx={{flexGrow: 1, p: 3, boxShadow: 5, mr: "2em", ml: "2em", mt: "2em"}}>
         {/* <DrawerHeader /> */}
         <Typography gutterBottom variant="h5" component="div" fontWeight={700} sx={{ color: "#007bff", textAlign: "center" }}>
-          Pending Leave
+          All Leave
         </Typography>
         <Box sx={{ height: 3 + "vh" }} />
         <form className='d-flex input-group w-auto col-md-4'>
@@ -107,7 +107,7 @@ const PendingLeave = () => {
                     <StyledTableCell align="center">Start Date</StyledTableCell>
                     <StyledTableCell align="center">HOD Status</StyledTableCell>
                     <StyledTableCell align="center">Admin Status</StyledTableCell>
-                    <StyledTableCell align="center" sx={{minWidth: 250}}>Actions</StyledTableCell>
+                    <StyledTableCell align="center" sx={{minWidth: 160}}>Actions</StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -135,9 +135,6 @@ const PendingLeave = () => {
                             <Button aria-label="delete" onClick={() => window.alert("Delete")}>
                               <DeleteIcon />
                             </Button>
-                            <Button aria-label="track" onClick={() => navigate('/track-leave')}>
-                              <DirectionsBikeIcon />
-                            </Button>
                           </TableCell>
 
                         </TableRow>
@@ -164,4 +161,4 @@ const PendingLeave = () => {
   )
 }
 
-export default PendingLeave
+export default HLeave

@@ -57,10 +57,10 @@ export default function TrackLeave() {
 
   return (
     <>
-      <Box height={10 + "vh"} />
+      {/* <Box height={10 + "vh"} /> */}
       <Box sx={{ display: 'flex' }}>
-        <Box component="main"  sx={{ flexGrow: 1, p: 3, boxShadow: 5, mr: "2em", ml: "2em", mt: "5em" }}>
-          <Typography gutterBottom variant="h5" component="div" fontWeight={700} sx={{ color: "grey", textAlign: "center", fontStyle: 'italic' }}>
+        <Box component="main"  sx={{ flexGrow: 1, p: 3, boxShadow: 5, mr: "2em", ml: "2em", mt: "2em" }}>
+          <Typography gutterBottom variant="h5" component="div" fontWeight={700} sx={{ color: "#007bff", textAlign: "center"}}>
             Track Your Leave
           </Typography>
           <DrawerHeader />

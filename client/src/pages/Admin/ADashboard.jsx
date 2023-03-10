@@ -10,8 +10,11 @@ import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 // import { Stack } from '@mui/material';
-import './bg/Dashboard.css';
+import './ADashboard.css';
 // import { margin } from '@mui/system';
+
+
+import ANavbar from './ANavbar';
 
 import { Chart } from "react-google-charts";
 
@@ -36,11 +39,12 @@ export const options = {
   is3D: true,
 };
 
-const Dashboard = () => {
+const ADashboard = () => {
   return (
     <>
-      <Box height={80} />
-      <Box sx={{ display: 'flex', marginRight: 6 }}>
+      <ANavbar />
+      {/* <Box height={80} /> */}
+      <Box sx={{ display: 'flex' }}>
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           <Grid container spacing={5}>
             <Grid item xs={12} md={3}>
@@ -129,10 +133,10 @@ const Dashboard = () => {
             </Grid>
           </Grid>
 
-          <Box height={30} />
+          <Box height={50} />
           <Grid container spacing={5} >
             <Grid item xs={12} md={6}>
-              <Card sx={{ maxWidth: 650 }}>
+              <Card sx={{ maxWidth: 750 }}>
                 <CardContent >
                   <Chart
                     chartType="PieChart"
@@ -145,7 +149,7 @@ const Dashboard = () => {
               </Card>
             </Grid>
             <Grid item xs={12} md={6}>
-              <Card sx={{ maxWidth: 700 }}>
+              <Card sx={{ maxWidth: 750 }}>
                 <CardContent>
                   <Chart chartType="ColumnChart" width="100%" height="400px" data={dataForColumnChart} />
                 </CardContent>
@@ -158,4 +162,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard
+export default ADashboard

@@ -2,8 +2,8 @@ import React from 'react'
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
 import { MDBCol, MDBBtn, MDBContainer, MDBRow, MDBCard, MDBCardText, MDBCardBody, MDBCardImage, MDBTypography, MDBIcon } from 'mdb-react-ui-kit';
-import './Settings.css';
-import Navbar from './Navbar';
+import './HSettings.css';
+import HNavbar from './HNavbar';
 
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -14,10 +14,10 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   ...theme.mixins.toolbar,
 }));
 
-const Settings = () => {
+const HSettings = () => {
   return (
     <>
-      <Navbar />
+      <HNavbar />
       {/* <Box height={3 + "vh"} /> */}
       <Box sx={{ display: 'flex' }}>
         <Box component="main" alignItems={'center'} sx={{ flexGrow: 1, p: 3, boxShadow: 5, mr: "2em", ml: "2em", mt: "2em" }}>
@@ -32,7 +32,7 @@ const Settings = () => {
                         <MDBCardImage src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
                           alt="Avatar" className="my-5" style={{ width: '80px' }} fluid />
                         <MDBTypography tag="h5">John</MDBTypography>
-                        <MDBCardText>Web Designer</MDBCardText>
+                        <MDBCardText>HOD</MDBCardText>
                         <MDBIcon onClick={()=>window.alert("Edit")} far icon="edit mb-5" />
                       </MDBCol>
                       <MDBCol md="8">
@@ -54,7 +54,7 @@ const Settings = () => {
                             </MDBCol>
                             <MDBCol size="12" className="mb-4">
                               <MDBTypography tag="h6">Role</MDBTypography>
-                              <MDBCardText className="text-muted">Designer</MDBCardText>
+                              <MDBCardText className="text-muted">HOD</MDBCardText>
                             </MDBCol>
                           </MDBRow>
 
@@ -81,4 +81,4 @@ const Settings = () => {
   )
 }
 
-export default Settings
+export default HSettings

@@ -20,7 +20,7 @@ import Button from "@material-ui/core/Button";
 
 import { MDBBtn } from 'mdb-react-ui-kit';
 
-import Navbar from './Navbar';
+import ANavbar from './ANavbar';
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -30,28 +30,14 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   ...theme.mixins.toolbar,
 }));
 
-function createData(uname, leaveType, noOfDays, startDate, hodStatus, adminStatus) {
-  return { uname, leaveType, noOfDays, startDate, hodStatus, adminStatus };
+function createData(uname, email, role, phoneno) {
+  return {uname, email, role, phoneno};
 }
 
 const rows = [
-  createData('Gaurav', "Medical Leave", 8, "25/10/23", "Accept", "Reject"),
-  createData('Romin', "Causel Leave", 5, "25/10/23", "Reject", "Accept"),
-  createData('Gaurav', "Medical Leave", 4, "25/10/23", "Accept", "Reject"),
-  createData('Romin', "Causel Leave", 2, "25/10/23", "Reject", "Accept"),
-  createData('Gaurav', "Medical Leave", 5, "25/10/23", "Accept", "Reject"),
-  createData('Romin', "Causel Leave", 6, "25/10/23", "Reject", "Accept"),
-  createData('Gaurav', "Medical Leave", 7, "25/10/23", "Accept", "Reject"),
-  createData('Romin', "Causel Leave", 12, "25/10/23", "Reject", "Accept"),
-  createData('Gaurav', "Medical Leave", 4, "25/10/23", "Accept", "Reject"),
-  createData('Romin', "Causel Leave", 5, "25/10/23", "Reject", "Accept"),
-  createData('Gaurav', "Medical Leave", 9, "25/10/23", "Accept", "Reject"),
-  createData('Romin', "Causel Leave", 1, "25/10/23", "Reject", "Accept"),
-  createData('Gaurav', "Medical Leave", 2, "25/10/23", "Accept", "Reject"),
-  createData('Romin', "Causel Leave", 5, "25/10/23", "Reject", "Accept"),
-  createData('Gaurav', "Medical Leave", 3, "25/10/23", "Accept", "Reject"),
-  createData('Romin', "Causel Leave", 8, "25/10/23", "Reject", "Accept"),
-
+  createData('Gaurav', "info@gmail.com", "Designer", "+91 9999999999"),
+  createData('Romin', "info@gmail.com", "Tester", "+91 9999999999"),
+  createData('Gaurav', "info@gmail.com", "Developer", "+91 9999999999"),
 ];
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -65,7 +51,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 
-const PendingLeave = () => {
+const AEmployeeList = () => {
   const navigate = useNavigate();
 
   const [page, setPage] = React.useState(0);
@@ -83,11 +69,11 @@ const PendingLeave = () => {
 
   return (
     <>
-      <Navbar />
+      <ANavbar />
       <Box component="main" sx={{flexGrow: 1, p: 3, boxShadow: 5, mr: "2em", ml: "2em", mt: "2em"}}>
         {/* <DrawerHeader /> */}
         <Typography gutterBottom variant="h5" component="div" fontWeight={700} sx={{ color: "#007bff", textAlign: "center" }}>
-          Pending Leave
+          Employee List
         </Typography>
         <Box sx={{ height: 3 + "vh" }} />
         <form className='d-flex input-group w-auto col-md-4'>
@@ -102,12 +88,10 @@ const PendingLeave = () => {
                 <TableHead>
                   <TableRow sx={{ background: "yellow" }}>
                     <StyledTableCell>Username</StyledTableCell>
-                    <StyledTableCell align="center">Leave Type</StyledTableCell>
-                    <StyledTableCell align="center">No of Days</StyledTableCell>
-                    <StyledTableCell align="center">Start Date</StyledTableCell>
-                    <StyledTableCell align="center">HOD Status</StyledTableCell>
-                    <StyledTableCell align="center">Admin Status</StyledTableCell>
-                    <StyledTableCell align="center" sx={{minWidth: 250}}>Actions</StyledTableCell>
+                    <StyledTableCell align="center">Email</StyledTableCell>
+                    <StyledTableCell align="center">Role</StyledTableCell>
+                    <StyledTableCell align="center">Phone No</StyledTableCell>
+                    <StyledTableCell align="center" sx={{minWidth: 160}}>Actions</StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -123,20 +107,15 @@ const PendingLeave = () => {
                           <TableCell component="th" scope="row">
                             {row.uname}
                           </TableCell>
-                          <TableCell align="center">{row.leaveType}</TableCell>
-                          <TableCell align="center">{row.noOfDays}</TableCell>
-                          <TableCell align="center">{row.startDate}</TableCell>
-                          <TableCell align="center">{row.hodStatus}</TableCell>
-                          <TableCell align="center">{row.adminStatus}</TableCell>
+                          <TableCell align="center">{row.email}</TableCell>
+                          <TableCell align="center">{row.role}</TableCell>
+                          <TableCell align="center">{row.phoneno}</TableCell>
                           <TableCell align="center">
                             <Button aria-label="edit" onClick={() => window.alert("Edit")}>
                               <EditIcon />
                             </Button>
                             <Button aria-label="delete" onClick={() => window.alert("Delete")}>
                               <DeleteIcon />
-                            </Button>
-                            <Button aria-label="track" onClick={() => navigate('/track-leave')}>
-                              <DirectionsBikeIcon />
                             </Button>
                           </TableCell>
 
@@ -164,4 +143,4 @@ const PendingLeave = () => {
   )
 }
 
-export default PendingLeave
+export default AEmployeeList

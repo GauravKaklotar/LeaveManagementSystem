@@ -17,6 +17,8 @@ import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
 import Button from "@material-ui/core/Button";
 
+import Modal from 'react-bootstrap/Modal';
+import RButton from 'react-bootstrap/Button';
 
 import { MDBBtn } from 'mdb-react-ui-kit';
 
@@ -29,6 +31,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
+
 
 function createData(uname, leaveType, noOfDays, startDate, hodStatus, adminStatus) {
   return { uname, leaveType, noOfDays, startDate, hodStatus, adminStatus };
@@ -65,7 +68,14 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 
-const PendingLeave = () => {
+const Leave = () => {
+
+  const [show, setShow] = React.useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+
   const navigate = useNavigate();
 
   const [page, setPage] = React.useState(0);
@@ -84,21 +94,21 @@ const PendingLeave = () => {
   return (
     <>
       <Navbar />
-      <Box component="main" sx={{flexGrow: 1, p: 3, boxShadow: 5, mr: "2em", ml: "2em", mt: "2em"}}>
+      <Box component="main" sx={{ flexGrow: 1, p: 3, boxShadow: 5, mr: "2em", ml: "2em", mt: "2em" }}>
         {/* <DrawerHeader /> */}
         <Typography gutterBottom variant="h5" component="div" fontWeight={700} sx={{ color: "#007bff", textAlign: "center" }}>
-          Pending Leave
+          All Leave
         </Typography>
         <Box sx={{ height: 3 + "vh" }} />
         <form className='d-flex input-group w-auto col-md-4'>
-                        <input type='search' className='form-control' placeholder='Type query' aria-label='Search' />
-                        <MDBBtn color='info'>Search</MDBBtn>
+          <input type='search' className='form-control' placeholder='Type query' aria-label='Search' />
+          <MDBBtn color='info'>Search</MDBBtn>
         </form>
         <Box sx={{ height: 3 + "vh" }} />
         <Box sx={{ width: '100%', align: "center", mr: '10em' }}>
           <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-            <TableContainer sx={{maxHeight: 500}} component={Paper}>
-            <Table stickyHeader aria-label="sticky table">
+            <TableContainer sx={{ maxHeight: 500 }} component={Paper}>
+              <Table stickyHeader aria-label="sticky table">
                 <TableHead>
                   <TableRow sx={{ background: "yellow" }}>
                     <StyledTableCell>Username</StyledTableCell>
@@ -107,7 +117,7 @@ const PendingLeave = () => {
                     <StyledTableCell align="center">Start Date</StyledTableCell>
                     <StyledTableCell align="center">HOD Status</StyledTableCell>
                     <StyledTableCell align="center">Admin Status</StyledTableCell>
-                    <StyledTableCell align="center" sx={{minWidth: 250}}>Actions</StyledTableCell>
+                    <StyledTableCell align="center" sx={{ minWidth: 250 }}>Actions</StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -129,9 +139,23 @@ const PendingLeave = () => {
                           <TableCell align="center">{row.hodStatus}</TableCell>
                           <TableCell align="center">{row.adminStatus}</TableCell>
                           <TableCell align="center">
-                            <Button aria-label="edit" onClick={() => window.alert("Edit")}>
+                            <Button aria-label="edit" data-backdrop="static" onClick={()=>{window.alert("Edit")}}>
                               <EditIcon />
                             </Button>
+                            {/* <Modal className='backdrop: display: none' show={show} onHide={handleClose}>
+                              <Modal.Header closeButton>
+                                <Modal.Title>Modal heading</Modal.Title>
+                              </Modal.Header>
+                              <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+                              <Modal.Footer>
+                                <RButton variant="secondary" onClick={handleClose}>
+                                  Close
+                                </RButton>
+                                <RButton variant="primary" onClick={handleClose}>
+                                  Save Changes
+                                </RButton>
+                              </Modal.Footer>
+                            </Modal> */}
                             <Button aria-label="delete" onClick={() => window.alert("Delete")}>
                               <DeleteIcon />
                             </Button>
@@ -143,12 +167,12 @@ const PendingLeave = () => {
                         </TableRow>
                       );
                     }
-                  )}
+                    )}
                 </TableBody>
               </Table>
             </TableContainer>
             <TablePagination
-              sx={{ mt: 1, mr:5}}
+              sx={{ mt: 1, mr: 5 }}
               rowsPerPageOptions={[5, 10]}
               component="div"
               count={rows.length}
@@ -164,4 +188,4 @@ const PendingLeave = () => {
   )
 }
 
-export default PendingLeave
+export default Leave
