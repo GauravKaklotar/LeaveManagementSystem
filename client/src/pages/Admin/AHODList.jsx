@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -30,15 +31,9 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   ...theme.mixins.toolbar,
 }));
 
-function createData(uname, email, role, phoneno) {
-  return {uname, email, role, phoneno};
-}
-
-const rows = [
-  createData('Gaurav', "info@gmail.com", "HOD", "+91 9999999999"),
-  createData('Romin', "info@gmail.com", "HOD", "+91 9999999999"),
-  createData('Gaurav', "info@gmail.com", "HOD", "+91 9999999999"),
-];
+function createData(username, email, position, mobile) {
+  return {username, email, position, mobile};
+};
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -54,6 +49,8 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 const AHODList = () => {
   const navigate = useNavigate();
 
+  const [users, setUsers] = useState([]);
+
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -66,6 +63,43 @@ const AHODList = () => {
     setPage(0);
   };
 
+  useEffect(async () => {
+    const res = await fetch('/api/user/allhod', {
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+      }
+    });
+
+    const data = await res.json();
+    console.log(data);
+    if (data.Error) {
+      window.location.href = '/login';
+    }
+
+
+    const reverseData = data.map((item, index) => data[data.length - index - 1]);
+    setUsers(reverseData);
+
+
+    // console.log(leaves);
+
+
+  }, []);
+
+  console.log(users);
+
+  const rows = users.map((user) => {
+    return createData(
+      user.username,
+      user.email,
+      user.position,
+      user.mobile
+    );
+  });
+
+  console.log(rows);
+
 
   return (
     <>
@@ -73,7 +107,7 @@ const AHODList = () => {
       <Box component="main" sx={{flexGrow: 1, p: 3, boxShadow: 5, mr: "2em", ml: "2em", mt: "2em"}}>
         {/* <DrawerHeader /> */}
         <Typography gutterBottom variant="h5" component="div" fontWeight={700} sx={{ color: "#007bff", textAlign: "center" }}>
-          HOD List
+          All Managers
         </Typography>
         <Box sx={{ height: 3 + "vh" }} />
         <form className='d-flex input-group w-auto col-md-4'>
@@ -89,8 +123,8 @@ const AHODList = () => {
                   <TableRow sx={{ background: "yellow" }}>
                     <StyledTableCell>Username</StyledTableCell>
                     <StyledTableCell align="center">Email</StyledTableCell>
-                    <StyledTableCell align="center">Role</StyledTableCell>
-                    <StyledTableCell align="center">Phone No</StyledTableCell>
+                    <StyledTableCell align="center">Position</StyledTableCell>
+                    <StyledTableCell align="center">Mobie No</StyledTableCell>
                     <StyledTableCell align="center" sx={{minWidth: 160}}>Actions</StyledTableCell>
                   </TableRow>
                 </TableHead>
@@ -105,11 +139,11 @@ const AHODList = () => {
                           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
                           <TableCell component="th" scope="row">
-                            {row.uname}
+                            {row.username}
                           </TableCell>
                           <TableCell align="center">{row.email}</TableCell>
-                          <TableCell align="center">{row.role}</TableCell>
-                          <TableCell align="center">{row.phoneno}</TableCell>
+                          <TableCell align="center">{row.position}</TableCell>
+                          <TableCell align="center">{row.mobile}</TableCell>
                           <TableCell align="center">
                             <Button aria-label="edit" onClick={() => window.alert("Edit")}>
                               <EditIcon />

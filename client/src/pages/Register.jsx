@@ -22,6 +22,11 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
+
+import {ToastContainer, toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 const schema = yup
   .object({
     username: yup.string().min(3).max(10).required(),
@@ -67,7 +72,7 @@ export default function Register() {
   const vertical = "top";
   const horizontal = "right";
   const navigate = useNavigate();
-  const [gender, setGender] = useState("");
+  const [position, setposition] = useState("");
   const {
     register,
     handleSubmit,
@@ -78,26 +83,26 @@ export default function Register() {
   });
 
   // const onSubmit = async (data) => {
-  //   Object.assign(data, { gender: gender });
+  //   Object.assign(data, { position: position });
   //   console.log(data);
   // };
 
   const onSubmit = async (e) => {
     // e.preventDefault();
 
-    // Object.assign(e, { gender: gender });
-    // console.log(e.gender);
-    console.log(e);
-
-    const { username, email, password, confirmpassword, mobile } = e;
+    // Object.assign(e, { position: position });
+    // console.log(e.position);
+    // console.log(e);
+    
+    const { username, email, password, confirmpassword, mobile, position } = e;
     const res = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        username, email, password, cpassword: confirmpassword, mobile
+        username, email, password, cpassword: confirmpassword, mobile, position
       })
     });
-
+    
     const data = await res.json();
 
     // if (data.status === 402 || !data) {
@@ -106,12 +111,15 @@ export default function Register() {
 
     // }
     if (data.status === 422 || data.status === 409 || !data.message) {
-      window.alert(data.error);
+      toast.error(data.error);
+      // window.alert(data.error);
       // BasicAlerts(data.error, "error");
     }
     else {
-      window.alert("Successfully Registered");
-      navigate("/login");
+      // window.alert("Successfully Registered");
+      toast.success(data.message);
+      // navigate("/login");
+      window.location.href = "/login";
     }
 
   }
@@ -124,8 +132,8 @@ export default function Register() {
   };
 
   const handleChange = (event) => {
-    // errors.gender = event.target.value;
-    setGender(event.target.value);
+    // errors.position = event.target.value;
+    setposition(event.target.value);
   };
 
   function TransitionLeft(props) {
@@ -271,25 +279,26 @@ export default function Register() {
                         </Grid>
                         <Grid item xs={12} sx={{ml:"3em", mr:"4em"}}>
                           <FormControl fullWidth>
-                            <InputLabel  id="demo-simple-select-label">
-                              Choose Role
+                            <InputLabel id="demo-simple-select-label">
+                              Choose Position
                             </InputLabel>
                             <Select
+                              {...register("position")} 
                               labelId="demo-simple-select-label"
                               id="demo-simple-select"
-                              value={gender}
-                              label="Choose Role"
+                              value={position}
+                              label="Choose Position"
                               size="small"
                               onChange={handleChange}
                             >
-                              <MenuItem value="DEVELOPER">DEVELOPER</MenuItem>
-                              <MenuItem value="DESIGNER">DESIGNER</MenuItem>
-                              <MenuItem value="TESTER">TESTER</MenuItem>
+                              <MenuItem value="Developer">DEVELOPER</MenuItem>
+                              <MenuItem value="Designer">DESIGNER</MenuItem>
+                              <MenuItem value="Tester">TESTER</MenuItem>
                             </Select>
                           </FormControl>
-                          {errors.gender && (
+                          {errors.position && (
                             <span style={{ color: "#f7d643", fontSize: "12px" }}>
-                              {errors.gender?.message}
+                              {errors.position?.message}
                             </span>
                           )}
                         </Grid>

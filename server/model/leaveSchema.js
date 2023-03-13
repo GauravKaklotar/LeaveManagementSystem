@@ -16,14 +16,14 @@ const leaveSchema = new mongoose.Schema({
         required: true,
     },
     leaveStartDate: {
-        type: Date,
-        default: Date.now,
+        type: String,
+        default: Date.now.toString(),
         required: true,
     },
-    leaveEndDate: {
-        type: Date,
-        default: Date.now,
-    },
+    // leaveEndDate: {
+    //     type: Date,
+    //     default: Date.now,
+    // },
     numOfDays: {
         type: Number,
         required: true,

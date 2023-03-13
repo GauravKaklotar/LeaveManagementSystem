@@ -1,45 +1,81 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react';
+import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-// import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
-// import { Stack } from '@mui/material';
 import './HDashboard.css';
-// import { margin } from '@mui/system';
 
 
 import HNavbar from './HNavbar';
 
 import { Chart } from "react-google-charts";
 
-export const data = [
-  ["Task", "Hours per Day"],
-  ["Available", 10],
-  ["Rejected", 3],
-  ["Approved", 8],
-  ["Pending", 2],
-];
-
-export const dataForColumnChart = [
-  ["Element", "Count", { role: "style" }],
-  ["Available", 10, "#2caaa5"], // RGB value
-  ["Rejected", 3, "#bd5263"], // English color name
-  ["Approved", 8, "#34de75"],
-  ["Pending", 2, "color: #168bd0"], // CSS-style declaration
-];
-
-export const options = {
-  // title: "My Daily Activities",
-  is3D: true,
-};
-
 const HDashboard = () => {
+  const navigate = useNavigate();
+
+  const [total, setTotal] = React.useState(0);
+  const [pending, setPending] = React.useState(0);
+  const [approved, setApproved] = React.useState(0);
+  const [rejected, setRejected] = React.useState(0);
+
+  const data = [
+    ["Task", "Hours per Day"],
+    ["Total", total],
+    ["Rejected", rejected],
+    ["Approved", approved],
+    ["Pending", pending],
+  ];
+  
+   const dataForColumnChart = [
+    ["Element", "Count", { role: "style" }],
+    ["Total", total, "#2caaa5"], // RGB value
+    ["Rejected", rejected, "#bd5263"], // English color name
+    ["Approved", approved, "#34de75"],
+    ["Pending", pending, "color: #168bd0"], // CSS-style declaration
+  ];
+  
+   const options = {
+    // title: "My Daily Activities",
+    is3D: true,
+  };
+
+  useEffect(async () => {
+    try{
+      const res = await fetch('/api/leave/getAllLeaveCountsByHOD', {
+        method : "GET",
+        headers: { 
+          "content-type": "application/json",
+        },
+      }); 
+  
+      const data = await res.json();
+
+      console.log(data);
+  
+      if(data.Error)
+      {
+        window.location.href = "/login";
+        // navigate('/login');
+      }
+
+      setApproved(data.approved);
+      setPending(data.pending);
+      setRejected(data.rejected);
+      setTotal(data.total);
+    }
+    catch(err)
+    {
+      console.log(err);
+    }
+    
+  }, []);
+
   return (
     <>
       <HNavbar />
@@ -54,7 +90,7 @@ const HDashboard = () => {
                     <EventAvailableIcon sx={{ color: "white" }} />
                   </div>
                   <Typography gutterBottom variant="h5" component="div" fontWeight={500} sx={{ color: "whitesmoke" }}>
-                    10
+                    {total}
                   </Typography>
                   <Typography
                     gutterBottom
@@ -63,7 +99,7 @@ const HDashboard = () => {
                     fontWeight={4}
                     sx={{ color: '#ccd1d1' }}
                   >
-                    Available Leave
+                    Total Leave
                   </Typography>
                 </CardContent>
               </Card>
@@ -75,7 +111,7 @@ const HDashboard = () => {
                     <PendingActionsIcon sx={{ color: "white" }} />
                   </div>
                   <Typography gutterBottom variant="h5" component="div" fontWeight={500} sx={{ color: "whitesmoke" }}>
-                    2
+                    {pending}
                   </Typography>
                   <Typography
                     gutterBottom
@@ -96,7 +132,7 @@ const HDashboard = () => {
                     <DoneAllIcon sx={{ color: "white" }} />
                   </div>
                   <Typography gutterBottom variant="h5" component="div" fontWeight={500} sx={{ color: "whitesmoke" }}>
-                    8
+                    {approved}
                   </Typography>
                   <Typography
                     gutterBottom
@@ -117,7 +153,7 @@ const HDashboard = () => {
                     <ThumbDownIcon sx={{ color: "white" }} />
                   </div>
                   <Typography gutterBottom variant="h5" component="div" fontWeight={500} sx={{ color: "whitesmoke" }}>
-                    3
+                    {rejected}
                   </Typography>
                   <Typography
                     gutterBottom

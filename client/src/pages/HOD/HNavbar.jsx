@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {toast} from 'react-toastify';
+import {cookie} from 'react-cookie';
 import {
     MDBContainer,
     MDBNavbar,
@@ -21,6 +23,27 @@ export default function HNavbar() {
     const [showBasic, setShowBasic] = useState(false);
 
     const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        const res = await fetch('/api/logout', {
+            method: "POST",
+            headers: {
+              "content-type": "application/json",
+            }
+          });
+      
+          const data = await res.json();
+        //   console.log(data);
+        if(data.error) {
+            toast.error(data.error);
+        }
+        else
+        {
+            toast.success(data.message);
+        }
+
+        window.location.href='/login';
+    };
 
     return (
         <MDBNavbar sticky expand='lg' dark bgColor='primary'>
@@ -58,17 +81,22 @@ export default function HNavbar() {
                                 <MDBDropdownMenu>
                                     <MDBDropdownItem link href="/Hleave">Leave</MDBDropdownItem>
                                     {/* <MDBDropdownItem link href='/HNewLeave'>New Leave</MDBDropdownItem> */}
-                                    <MDBDropdownItem link href='/HAcceptedLeave'>Accepted Leave</MDBDropdownItem>
+                                    <MDBDropdownItem link href='/HAcceptedLeave'>Approved Leave</MDBDropdownItem>
                                     <MDBDropdownItem link href='/HPendingLeave'>Pending Leave</MDBDropdownItem>
                                     <MDBDropdownItem link href='/HRejectedLeave'>Rejected Leave</MDBDropdownItem>
                                 </MDBDropdownMenu>
                             </MDBDropdown>
                         </MDBNavbarItem>
                         <MDBNavbarItem>
+                            <MDBNavbarLink active aria-current='page' href='/HEmployees'>
+                                Employees
+                            </MDBNavbarLink>
+                        </MDBNavbarItem>
+                        <MDBNavbarItem>
                             <MDBNavbarLink active aria-current='page' href='/HSettings'>Settings</MDBNavbarLink>
                         </MDBNavbarItem>
                         <MDBNavbarItem>
-                            <MDBNavbarLink active aria-current='page' href='/login'>Logout</MDBNavbarLink>
+                            <MDBNavbarLink active aria-current='page' onClick={handleLogout}>Logout</MDBNavbarLink>
                             {/* <MDBIcon onClick={()=>navigate('/login')} fas icon="sign-out ml-2 mt-3 lg" /> */}
                         </MDBNavbarItem>
                     </MDBNavbarNav>

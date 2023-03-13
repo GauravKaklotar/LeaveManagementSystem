@@ -38,6 +38,12 @@ const userSchema = new mongoose.Schema({
         default: "STAFF",
         required: [true, "Please Select a Role !!"]  
     },
+    position : {
+        type : String,
+        enum: ["Developer", "Designer", "Tester", "HR"],
+        default: "Developer",
+        required: [true, "Please Select a Position !!"]  
+    },
     // gender: {
     //     type: String,
     //     required : true

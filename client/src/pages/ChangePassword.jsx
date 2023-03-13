@@ -11,15 +11,16 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { useState, forwardRef } from "react";
+import { useState, forwardRef, useEffect } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Stack from "@mui/material/Stack";
 // import MuiAlert from "@mui/material/Alert";
 import Slide from "@mui/material/Slide";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import axios from "axios";
 
-import {ToastContainer, toast} from 'react-toastify';
+import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // const Alert = forwardRef(function Alert(props, ref) {
@@ -49,7 +50,7 @@ const center = {
   left: "37%",
 };
 
-export default function Login() {
+export default function ChangePassword() {
   const [open, setOpen] = useState(false);
   const [remember, setRemember] = useState(false);
   const vertical = "top";
@@ -63,42 +64,66 @@ export default function Login() {
     formState: { errors },
   } = useForm();
 
-  // const onSubmit = async (data) => {
-  //   console.log(data);
-  //   setOpen(true);
-  // };
+  const [role, setRole] = useState('');
+
+  useEffect(() => {
+    axios.get('/api/getRole').then((res) => {
+      console.log(res);
+      setRole(res.data.role);
+      console.log(res.data.role);
+      if(res.data.Error)
+      {
+        navigate('/login');
+      }
+    }).catch((Error) => {
+      // console.log(Error);
+      // navigate('/login');
+    });
+    
+  }, []);
+
+  console.log(role);
 
   const onSubmit = async (e) => {
     // e.preventDefault();
 
     console.log(e);
 
-    const { email, password } = e;
+    let res;
 
-    const res = await fetch('/api/login', {
-      method : "post",
-      headers: { 
-        "content-type": "application/json",
-      },
+    const { previousPassword, newPassword, cNewPassword} = e;
+
+    if(role === "ADMIN") {
+      res = await fetch("/api/user/updatePasswordByAdmin", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          previousPassword, newPassword, confirmPassword: cNewPassword 
+        })
+      });
+    }
+    else
+    {
+      res = await fetch("/api/user/updatePassword", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        email, password
+        previousPassword, newPassword, confirmPassword: cNewPassword 
       })
     });
-
+  }
+    
     const data = await res.json();
-    if (!data.message) {
-      // window.alert(data.error);
+    console.log(data);
+
+    if(data.error)
+    {
       toast.error(data.error);
-      console.log(data.error);
-      // <BasicAlerts e={data.error} />;
-      
     }
-    else {
-      // window.alert("Login Successfully");
+    else
+    {
       toast.success(data.message);
-      console.log("Login Successfully");
-      // navigate("/");
-      window.location.href = "/";
+      window.location.href = '/';
     }
   };
 
@@ -115,17 +140,6 @@ export default function Login() {
 
   return (
     <>
-      {/* <Snackbar
-        open={open}
-        autoHideDuration={3000}
-        onClose={handleClose}
-        TransitionComponent={TransitionLeft}
-        anchorOrigin={{ vertical, horizontal }}
-      >
-        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
-          You have successfully logged in!
-        </Alert>
-      </Snackbar> */}
       <div
         style={{
           backgroundImage: `url(${bgimg})`,
@@ -167,8 +181,8 @@ export default function Login() {
                       >
                         <LockOutlinedIcon />
                       </Avatar>
-                      <Typography component="h1" variant="h4">
-                        Sign In
+                      <Typography sx={{ml:"-35px", mt:"5px"}} component="h1" variant="h5">
+                        Update Password
                       </Typography>
                     </Box>
                     <Box sx={{ mt: 2 }} />
@@ -176,14 +190,15 @@ export default function Login() {
                       <Grid container spacing={1}>
                         <Grid item xs={12} sx={{ ml: "3em", mr: "3em" }}>
                           <TextField
-                            {...register("email", { required: true })}
                             fullWidth
-                            id="email"
-                            label="Email"
-                            name="email"
-                            autoComplete="email"
+                            {...register("previousPassword", { required: true })}
+                            name="previousPassword"
+                            label="Previous Password"
+                            type="password"
+                            id="password"
+                            autoComplete="new-password"
                           />
-                          {errors.email && (
+                          {errors.previousPassword && (
                             <span
                               style={{ color: "#f7d643", fontSize: "12px" }}
                             >
@@ -194,14 +209,14 @@ export default function Login() {
                         <Grid item xs={12} sx={{ ml: "3em", mr: "3em" }}>
                           <TextField
                             fullWidth
-                            {...register("password", { required: true })}
-                            name="password"
-                            label="Password"
+                            {...register("newPassword", { required: true })}
+                            name="newPassword"
+                            label="New Password"
                             type="password"
                             id="password"
                             autoComplete="new-password"
                           />
-                          {errors.password && (
+                          {errors.newPassword && (
                             <span
                               style={{ color: "#f7d643", fontSize: "12px" }}
                             >
@@ -210,24 +225,22 @@ export default function Login() {
                           )}
                         </Grid>
                         <Grid item xs={12} sx={{ ml: "3em", mr: "3em" }}>
-                          <Stack direction="row" spacing={2}>
-                            <FormControlLabel
-                              sx={{ width: "60%" }}
-                              onClick={() => setRemember(!remember)}
-                              control={<Checkbox checked={remember} />}
-                              label="Remember me"
-                            />
-                            <Typography
-                              variant="body1"
-                              component="span"
-                              onClick={() => {
-                                navigate("/reset-password");
-                              }}
-                              style={{ marginTop: "10px", cursor: "pointer" }}
+                          <TextField
+                            fullWidth
+                            {...register("cNewPassword", { required: true })}
+                            name="cNewPassword"
+                            label="Confirm New Password"
+                            type="password"
+                            id="password"
+                            autoComplete="new-password"
+                          />
+                          {errors.cNewPassword && (
+                            <span
+                              style={{ color: "#f7d643", fontSize: "12px" }}
                             >
-                              Forgot password?
-                            </Typography>
-                          </Stack>
+                              This field is required
+                            </span>
+                          )}
                         </Grid>
                         <Grid item xs={12} sx={{ ml: "5em", mr: "5em" }}>
                           <Button
@@ -244,30 +257,8 @@ export default function Login() {
                               backgroundColor: "#FF9A01",
                             }}
                           >
-                            Sign in
+                            Update
                           </Button>
-                        </Grid>
-                        <Grid item xs={12} sx={{ ml: "3em", mr: "3em" }}>
-                          <Stack direction="row" spacing={2}>
-                            <Typography
-                              variant="body1"
-                              component="span"
-                              style={{ marginTop: "10px" }}
-                            >
-                              Not registered yet?{" "}
-                              <span
-                                style={{
-                                  color: "#beb4fb",
-                                  cursor: "pointer",
-                                }}
-                                onClick={() => {
-                                  navigate("/register");
-                                }}
-                              >
-                                Create an Account
-                              </span>
-                            </Typography>
-                          </Stack>
                         </Grid>
                       </Grid>
                     </form>

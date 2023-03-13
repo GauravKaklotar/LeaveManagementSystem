@@ -8,8 +8,9 @@ const verifyUser = async (req, res, next) => {
     //header[1] means we removed "barear"prefix from header as headr[0]
     // console.log(req.headers.cookie.replace("jwttoken=", ''));
     // const token = req.headers.authorization.split(' ')[1];
-    const token = req.headers.cookie.replace("jwttoken=", '');
+    const token = req.headers.cookie?.replace("jwttoken=", '');
     if(!token){
+        console.log("Token Not Found");
         res.json({Error : "Token Not Found"});
     }
     try{
@@ -26,9 +27,11 @@ const verifyUser = async (req, res, next) => {
         req.id = user._id;
         req.password = user.password;
         req.roles = user.roles;
+        req.username = user.username;
+        req.user = user;
+        req.position = user.position;
         
         console.log("user verified");
-
         next();
     }
     catch(err){

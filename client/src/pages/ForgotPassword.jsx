@@ -1,7 +1,7 @@
 // import { React} from 'react';
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import bg from "./bg/forgetPassword.svg";
+import bg from "./bg/email.svg";
 import bgimg from "./bg/backimg.jpg";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -49,6 +49,8 @@ const center = {
 };
 
 export default function ForgotPassword() {
+
+
   const [open, setOpen] = useState(false);
   // const [remember, setRemember] = useState(false);
   const vertical = "top";
@@ -76,7 +78,7 @@ export default function ForgotPassword() {
   function TransitionLeft(props) {
     return <Slide {...props} direction="left" />;
   }
-  
+
 
   return (
     <>
@@ -147,6 +149,7 @@ export default function ForgotPassword() {
                             label="Email"
                             name="email"
                             autoComplete="email"
+                            // required
                           />
                           {errors.email && (
                             <span
@@ -162,6 +165,7 @@ export default function ForgotPassword() {
                             variant="contained"
                             fullWidth="true"
                             size="large"
+                            onClick={navigate("/verifyOTP")}
                             sx={{
                               mt: "15px",
                               mr: "20px",
@@ -171,7 +175,7 @@ export default function ForgotPassword() {
                               backgroundColor: "#FF9A01",
                             }}
                           >
-                            Send Reset Link
+                            Send OTP
                           </Button>
                         </Grid>
                         <Grid item xs={12} sx={{ ml: "3em", mr: "3em" }}>
@@ -203,6 +207,7 @@ export default function ForgotPassword() {
           </Grid>
         </Box>
       </div>
+
     </>
   );
 }

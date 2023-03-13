@@ -1,4 +1,5 @@
-import React from 'react'
+import React, {useEffect} from 'react';
+import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
@@ -18,28 +19,65 @@ import Navbar from './Navbar';
 
 import { Chart } from "react-google-charts";
 
-export const data = [
-  ["Task", "Hours per Day"],
-  ["Available", 10],
-  ["Rejected", 3],
-  ["Approved", 8],
-  ["Pending", 2],
-];
-
-export const dataForColumnChart = [
-  ["Element", "Count", { role: "style" }],
-  ["Available", 10, "#2caaa5"], // RGB value
-  ["Rejected", 3, "#bd5263"], // English color name
-  ["Approved", 8, "#34de75"],
-  ["Pending", 2, "color: #168bd0"], // CSS-style declaration
-];
-
-export const options = {
-  // title: "My Daily Activities",
-  is3D: true,
-};
-
 const Dashboard = () => {
+
+  const navigate = useNavigate();
+
+  const [available, setAvailable] = React.useState(30);
+  const [pending, setPending] = React.useState(0);
+  const [approved, setApproved] = React.useState(0);
+  const [rejected, setRejected] = React.useState(0);
+
+  const data = [
+    ["Task", "Hours per Day"],
+    ["Available", available],
+    ["Rejected", rejected],
+    ["Approved", approved],
+    ["Pending", pending],
+  ];
+  
+   const dataForColumnChart = [
+    ["Element", "Count", { role: "style" }],
+    ["Available", available, "#2caaa5"], // RGB value
+    ["Rejected", rejected, "#bd5263"], // English color name
+    ["Approved", approved, "#34de75"],
+    ["Pending", pending, "color: #168bd0"], // CSS-style declaration
+  ];
+  
+   const options = {
+    // title: "My Daily Activities",
+    is3D: true,
+  };
+
+  useEffect(async () => {
+    try{
+      const res = await fetch('/api/leave/getUserLeaveCounts', {
+        method : "GET",
+        headers: { 
+          "content-type": "application/json",
+        },
+      }); 
+  
+      const data = await res.json();
+  
+      if(data.Error)
+      {
+        window.location.href = "/login";
+        // navigate('/login');
+      }
+
+      setApproved(data.approved);
+      setPending(data.pending);
+      setRejected(data.rejected);
+      const remain = 30-data.approved;
+      setAvailable(remain);
+    }
+    catch(err)
+    {
+      console.log(err);
+    }
+    
+  }, []);
   return (
     <>
       <Navbar />
@@ -54,7 +92,7 @@ const Dashboard = () => {
                     <EventAvailableIcon sx={{ color: "white" }} />
                   </div>
                   <Typography gutterBottom variant="h5" component="div" fontWeight={500} sx={{ color: "whitesmoke", mt: 1}}>
-                    10
+                    {available}
                   </Typography>
                   <Typography
                     gutterBottom
@@ -75,7 +113,7 @@ const Dashboard = () => {
                     <PendingActionsIcon sx={{ color: "white" }} />
                   </div>
                   <Typography gutterBottom variant="h5" component="div" fontWeight={500} sx={{ color: "whitesmoke", mt: 1 }}>
-                    2
+                    {pending}
                   </Typography>
                   <Typography
                     gutterBottom
@@ -96,7 +134,7 @@ const Dashboard = () => {
                     <DoneAllIcon sx={{ color: "white" }} />
                   </div>
                   <Typography gutterBottom variant="h5" component="div" fontWeight={500} sx={{ color: "whitesmoke", mt: 1 }}>
-                    8
+                    {approved}
                   </Typography>
                   <Typography
                     gutterBottom
@@ -117,7 +155,7 @@ const Dashboard = () => {
                     <ThumbDownIcon sx={{ color: "white" }} />
                   </div>
                   <Typography gutterBottom variant="h5" component="div" fontWeight={500} sx={{ color: "whitesmoke", mt: 1 }}>
-                    3
+                    {rejected}
                   </Typography>
                   <Typography
                     gutterBottom

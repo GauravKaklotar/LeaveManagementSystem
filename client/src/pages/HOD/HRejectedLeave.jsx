@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -34,25 +35,6 @@ function createData(uname, leaveType, noOfDays, startDate, hodStatus, adminStatu
   return { uname, leaveType, noOfDays, startDate, hodStatus, adminStatus };
 }
 
-const rows = [
-  createData('Gaurav', "Medical Leave", 8, "25/10/23", "Accept", "Reject"),
-  createData('Romin', "Causel Leave", 5, "25/10/23", "Reject", "Accept"),
-  createData('Gaurav', "Medical Leave", 4, "25/10/23", "Accept", "Reject"),
-  createData('Romin', "Causel Leave", 2, "25/10/23", "Reject", "Accept"),
-  createData('Gaurav', "Medical Leave", 5, "25/10/23", "Accept", "Reject"),
-  createData('Romin', "Causel Leave", 6, "25/10/23", "Reject", "Accept"),
-  createData('Gaurav', "Medical Leave", 7, "25/10/23", "Accept", "Reject"),
-  createData('Romin', "Causel Leave", 12, "25/10/23", "Reject", "Accept"),
-  createData('Gaurav', "Medical Leave", 4, "25/10/23", "Accept", "Reject"),
-  createData('Romin', "Causel Leave", 5, "25/10/23", "Reject", "Accept"),
-  createData('Gaurav', "Medical Leave", 9, "25/10/23", "Accept", "Reject"),
-  createData('Romin', "Causel Leave", 1, "25/10/23", "Reject", "Accept"),
-  createData('Gaurav', "Medical Leave", 2, "25/10/23", "Accept", "Reject"),
-  createData('Romin', "Causel Leave", 5, "25/10/23", "Reject", "Accept"),
-  createData('Gaurav', "Medical Leave", 3, "25/10/23", "Accept", "Reject"),
-  createData('Romin', "Causel Leave", 8, "25/10/23", "Reject", "Accept"),
-
-];
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -68,6 +50,8 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 const HRejectedLeave = () => {
   const navigate = useNavigate();
 
+  const [leaves, setLeaves] = useState([]);
+
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -79,6 +63,45 @@ const HRejectedLeave = () => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+
+  useEffect(async () => {
+    const res = await fetch('/api/leave/rejectedLeavesByHod', {
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+      }
+    });
+
+    const data = await res.json();
+    console.log(data);
+    if (data.Error) {
+      window.location.href = '/login';
+    }
+
+
+    const reverseData = data.map((item, index) => data[data.length - index - 1]);
+    setLeaves(reverseData);
+
+
+    // console.log(leaves);
+
+
+  }, []);
+
+  console.log(leaves);
+
+  const rows = leaves.map((leave) => {
+    return createData(
+      leave.username,
+      leave.leaveTypeName,
+      leave.rest.numOfDays,
+      leave.rest.leaveStartDate,
+      leave.rest.hodStatus,
+      leave.rest.adminStatus
+    );
+  });
+
+  console.log(rows);
 
 
   return (
@@ -126,8 +149,12 @@ const HRejectedLeave = () => {
                           <TableCell align="center">{row.leaveType}</TableCell>
                           <TableCell align="center">{row.noOfDays}</TableCell>
                           <TableCell align="center">{row.startDate}</TableCell>
-                          <TableCell align="center">{row.hodStatus}</TableCell>
-                          <TableCell align="center">{row.adminStatus}</TableCell>
+                          {row.hodStatus === "Pending" && <TableCell align="center" sx={{ color: 'blue' }}>{row.hodStatus}</TableCell>}
+                          {row.hodStatus === "Approved" && <TableCell align="center" sx={{ color: 'green' }}>{row.hodStatus}</TableCell>}
+                          {row.hodStatus === "Rejected" && <TableCell align="center" sx={{ color: 'red' }}>{row.hodStatus}</TableCell>}
+                          {row.adminStatus === "Pending" && <TableCell align="center" sx={{ color: 'blue' }}>{row.adminStatus}</TableCell>}
+                          {row.adminStatus === "Approved" && <TableCell align="center" sx={{ color: 'green' }}>{row.adminStatus}</TableCell>}
+                          {row.adminStatus === "Rejected" && <TableCell align="center" sx={{ color: 'red' }}>{row.adminStatus}</TableCell>}
                           <TableCell align="center">
                             <Button aria-label="edit" onClick={() => window.alert("Edit")}>
                               <EditIcon />
@@ -161,4 +188,4 @@ const HRejectedLeave = () => {
   )
 }
 
-export default HRejectedLeave
+export default HRejectedLeave;

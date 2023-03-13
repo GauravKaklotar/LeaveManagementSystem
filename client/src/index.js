@@ -12,9 +12,9 @@ import 'bootstrap-css-only/css/bootstrap.min.css';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Router>
-  <React.StrictMode>
+  {/* <React.StrictMode> */}
     <App />
-  </React.StrictMode>
+  {/* </React.StrictMode> */}
   </Router>
 );
 

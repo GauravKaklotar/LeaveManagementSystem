@@ -31,10 +31,9 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   ...theme.mixins.toolbar,
 }));
 
-function createData(uname, leaveType, noOfDays, startDate, hodStatus, adminStatus) {
-  return { uname, leaveType, noOfDays, startDate, hodStatus, adminStatus };
-}
-
+function createData(username, email, position, mobile) {
+  return {username, email, position, mobile};
+};
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -47,10 +46,10 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 
-const HPendingLeave = () => {
+const HEmployees = () => {
   const navigate = useNavigate();
 
-  const [leaves, setLeaves] = useState([]);
+  const [users, setUsers] = useState([]);
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -65,7 +64,7 @@ const HPendingLeave = () => {
   };
 
   useEffect(async () => {
-    const res = await fetch('/api/leave/pendingLeavesByHod', {
+    const res = await fetch('/api/user/allUsersByHod', {
       method: "GET",
       headers: {
         "content-type": "application/json",
@@ -80,7 +79,7 @@ const HPendingLeave = () => {
 
 
     const reverseData = data.map((item, index) => data[data.length - index - 1]);
-    setLeaves(reverseData);
+    setUsers(reverseData);
 
 
     // console.log(leaves);
@@ -88,16 +87,14 @@ const HPendingLeave = () => {
 
   }, []);
 
-  console.log(leaves);
+  console.log(users);
 
-  const rows = leaves.map((leave) => {
+  const rows = users.map((user) => {
     return createData(
-      leave.username,
-      leave.leaveTypeName,
-      leave.rest.numOfDays,
-      leave.rest.leaveStartDate,
-      leave.rest.hodStatus,
-      leave.rest.adminStatus
+      user.username,
+      user.email,
+      user.position,
+      user.mobile
     );
   });
 
@@ -110,7 +107,7 @@ const HPendingLeave = () => {
       <Box component="main" sx={{flexGrow: 1, p: 3, boxShadow: 5, mr: "2em", ml: "2em", mt: "2em"}}>
         {/* <DrawerHeader /> */}
         <Typography gutterBottom variant="h5" component="div" fontWeight={700} sx={{ color: "#007bff", textAlign: "center" }}>
-          Pending Leave
+          All Employees
         </Typography>
         <Box sx={{ height: 3 + "vh" }} />
         <form className='d-flex input-group w-auto col-md-4'>
@@ -125,11 +122,9 @@ const HPendingLeave = () => {
                 <TableHead>
                   <TableRow sx={{ background: "yellow" }}>
                     <StyledTableCell>Username</StyledTableCell>
-                    <StyledTableCell align="center">Leave Type</StyledTableCell>
-                    <StyledTableCell align="center">No of Days</StyledTableCell>
-                    <StyledTableCell align="center">Start Date</StyledTableCell>
-                    <StyledTableCell align="center">HOD Status</StyledTableCell>
-                    <StyledTableCell align="center">Admin Status</StyledTableCell>
+                    <StyledTableCell align="center">Email</StyledTableCell>
+                    <StyledTableCell align="center">Position</StyledTableCell>
+                    <StyledTableCell align="center">Mobie No</StyledTableCell>
                     <StyledTableCell align="center" sx={{minWidth: 160}}>Actions</StyledTableCell>
                   </TableRow>
                 </TableHead>
@@ -144,17 +139,11 @@ const HPendingLeave = () => {
                           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
                           <TableCell component="th" scope="row">
-                            {row.uname}
+                            {row.username}
                           </TableCell>
-                          <TableCell align="center">{row.leaveType}</TableCell>
-                          <TableCell align="center">{row.noOfDays}</TableCell>
-                          <TableCell align="center">{row.startDate}</TableCell>
-                          {row.hodStatus === "Pending" && <TableCell align="center" sx={{ color: 'blue' }}>{row.hodStatus}</TableCell>}
-                          {row.hodStatus === "Approved" && <TableCell align="center" sx={{ color: 'green' }}>{row.hodStatus}</TableCell>}
-                          {row.hodStatus === "Rejected" && <TableCell align="center" sx={{ color: 'red' }}>{row.hodStatus}</TableCell>}
-                          {row.adminStatus === "Pending" && <TableCell align="center" sx={{ color: 'blue' }}>{row.adminStatus}</TableCell>}
-                          {row.adminStatus === "Approved" && <TableCell align="center" sx={{ color: 'green' }}>{row.adminStatus}</TableCell>}
-                          {row.adminStatus === "Rejected" && <TableCell align="center" sx={{ color: 'red' }}>{row.adminStatus}</TableCell>}
+                          <TableCell align="center">{row.email}</TableCell>
+                          <TableCell align="center">{row.position}</TableCell>
+                          <TableCell align="center">{row.mobile}</TableCell>
                           <TableCell align="center">
                             <Button aria-label="edit" onClick={() => window.alert("Edit")}>
                               <EditIcon />
@@ -188,4 +177,4 @@ const HPendingLeave = () => {
   )
 }
 
-export default HPendingLeave;
+export default HEmployees

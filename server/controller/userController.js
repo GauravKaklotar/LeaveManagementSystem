@@ -5,9 +5,11 @@ const bcrypt = require('bcryptjs');
 const otpGenerator = require('otp-generator');
 const {ObjectId} = require('mongodb');
 const sendMail = require('../controller/mailer');
+const { use } = require('../router/auth');
+const jwt = require('jsonwebtoken');
  
 const registerUser = async (req, res) => {
-    const {username, email, password, cpassword, mobile, roles } = req.body;
+    const {username, email, password, cpassword, mobile, position} = req.body;
     // res.json({message : req.body}); //for thunderclient response
     //message ->db entity
     //req.body ->userfilled property
@@ -29,7 +31,7 @@ const registerUser = async (req, res) => {
             return res.json({error : "change the email ID as its can't be used"});
         }
         else{
-            const employee = new employees({username, email, password, mobile, roles });
+            const employee = new employees({username, email, password, mobile, position });
             //pass hashing
             await employee.save();  
             res.status(201).json({message : 'user registered successfully'});
@@ -44,7 +46,7 @@ const loginUser = async (req, res) => {
     try{
         let token;
         const {email, password} = req.body;
-        if( !email || !password){
+        if( !email || !password ){
             return res.status(400).json({error : "Plz fill the data"});
         }
 
@@ -66,7 +68,18 @@ const loginUser = async (req, res) => {
         }
         else{
             // req.user = employeeLogin.toJSON();
-            res.json({message : "User login successfully", token});
+            // res.json({message : "User login successfully", token});
+            const decoded = await jwt.verify(token, process.env.SECRET_KEY);
+            const user = await employees.findById({_id : decoded._id, "tokens.token": token});
+    
+            if(!user){
+                throw new Error("User not found !!");
+            }
+            req.roles = user.roles;
+
+            const role = user.roles;
+            console.log(user.roles);
+            res.json({"message" : "User login successfully", role });
         }
 
     }catch(err){
@@ -74,9 +87,89 @@ const loginUser = async (req, res) => {
     }
 }
 
+const logoutUser = async (req, res) => {
+    try {
+      const allCookies = req.headers.cookie;
+
+    const cookies = allCookies.split("; ");
+    cookies.forEach(cookie => {
+      const [name, value] = cookie.split("=");
+      if (name === "jwttoken") {
+        res.setHeader("Set-Cookie", [
+            `jwttoken=; Path=/; Max-Age=0`
+          ]);
+      }
+    });
+  
+      res.json({ message: "User Log Out successfully." });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
+
+const getRole = async (req, res) => {
+    try{
+      const token = req.headers.cookie.replace("jwttoken=", '');
+      if(!token){
+        // throw new Error("Token not found");
+          res.status(200).json({Error : "Token Not Found"});
+      }
+      const decoded = await jwt.verify(token, process.env.SECRET_KEY);
+          const user = await employees.findById({_id : decoded._id, "tokens.token": token});
+  
+          if(!user){
+              throw new Error("User not found !!");
+          }
+
+          console.log(user.roles);
+  
+          let role = user.roles;
+          let username = user.username;
+
+          res.status(250).json({"message" : "Roles verified", role, username});
+    }
+    catch (error) {
+        // res.status(401).send('Unauthorized: No token provided');
+        console.log(error);
+    }
+  }
+
+
+  
+
 const allUsers = async (req, res) => {
     try{
-        const users = await employees.find();
+        const users = await employees.find({roles : 'STAFF'});
+        if(!users){
+            res.json({error : "No users are there"});
+        }
+        res.json(users);
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+
+const allUsersByHod = async (req, res) => {
+    try {
+      const hodPos = req.position;
+      const users = await employees.find({$and : [{roles : "STAFF"}, {position : hodPos}]});
+      if (!users) {
+        res.json({ error: "No users are there" });
+      }
+      else{
+        res.json(users);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
+
+const allhod = async (req, res) => {
+    try{
+        const users = await employees.find({roles : 'HOD'});
         if(!users){
             res.json({error : "No users are there"});
         }
@@ -88,7 +181,7 @@ const allUsers = async (req, res) => {
 }
 
 const getUser = async (req, res) => {
-    const {id} = req.params;
+    const id = req.id;
     try{    
         if(!id){
             res.json({error : "Invalid Credentials"});
@@ -140,37 +233,49 @@ const updateUser = async (req, res) => {
     }
 }
 
-const updatePassword = async function(req, res){
-    try{
-        const id = req.id;
-        const {previousPassword, newPassword} = req.body;
-        if(!previousPassword || !newPassword){
-            res.json({error: "Please fill all fields"});
-        }
-        if(previousPassword === newPassword){
-            res.json({error: "New password cannot be same as old password"});
-        }
-        if(!req.password){
-            res.json({error: "cant find req.pass"});
-        }
-        const isMatch = await bcrypt.compare(previousPassword, req.password);
-        if(isMatch){
-            const hash = await bcrypt.hash(newPassword, 12);
-            await employees.findOneAndUpdate({_id : id}, {
-                $set : {password : hash},
-            }, {new : true})
-            // const updatedUser = await employees.findOne({password : hash});
-            // await updatedUser.save();
-            res.json({message : "password updated Successfully", hash});
+const updatePassword = async function (req, res) {
+    try {
+      const id = req.id;
+      const { previousPassword, newPassword, confirmPassword } = req.body;
+      if (!previousPassword || !newPassword || !confirmPassword) {
+        res.json({ error: "Please fill all fields" });
+      }
+      else{
+        if (previousPassword === newPassword) {
+          res.json({ error: "New password cannot be same as old password" });
         }
         else{
-            res.json({error : "Please enter correct password"});
+          if(newPassword !== confirmPassword){
+            res.json({ error: "New password and confirm password doesnot match" });
+          }
+          else{
+            if (!req.password) {
+              res.json({ error: "cant find req.pass" });
+            }
+            const isMatch = await bcrypt.compare(previousPassword, req.password);
+            if (isMatch) {
+              const hash = await bcrypt.hash(newPassword, 12);
+              await employees.findOneAndUpdate(
+                { _id: id },
+                {
+                  $set: { password: hash },
+                },
+                { new: true }
+              );
+              // const updatedUser = await employees.findOne({password : hash});
+              // await updatedUser.save();
+              res.json({ message: "password updated Successfully", hash });
+            } else {
+              res.json({ error: "Please enter correct current password" });
+            }
+          }
         }
+      }
+    } catch (error) {
+      console.log(error);
     }
-    catch(error){
-        console.log(error);
-    }
-}
+  };
+  
 
 const sendOtp = async function(req, res){
     const {email} = req.params;
@@ -279,8 +384,12 @@ const deleteUser = async function(req, res){
 module.exports = {
     registerUser,
     loginUser,
+    logoutUser,
+    getRole,
     getUser,
     allUsers,
+    allUsersByHod,
+    allhod,
     updateUser,
     updatePassword,
     sendOtp,

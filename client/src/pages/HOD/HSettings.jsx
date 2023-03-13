@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
 import { MDBCol, MDBBtn, MDBContainer, MDBRow, MDBCard, MDBCardText, MDBCardBody, MDBCardImage, MDBTypography, MDBIcon } from 'mdb-react-ui-kit';
@@ -15,6 +15,30 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 const HSettings = () => {
+
+  const [profile, setProfile] = useState('');
+
+  useEffect(async () => {
+    const res = await fetch('/api/user/getUser', {
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+      }
+    });
+
+    const data = await res.json();
+
+    if (data.Error) {
+      window.location.href = '/login';
+    }
+
+    setProfile(data); 
+
+  }, []);
+
+
+  console.log(profile);
+
   return (
     <>
       <HNavbar />
@@ -31,8 +55,8 @@ const HSettings = () => {
                         style={{ borderTopLeftRadius: '.5rem', borderBottomLeftRadius: '.5rem' }}>
                         <MDBCardImage src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
                           alt="Avatar" className="my-5" style={{ width: '80px' }} fluid />
-                        <MDBTypography tag="h5">John</MDBTypography>
-                        <MDBCardText>HOD</MDBCardText>
+                        <MDBTypography tag="h5">{profile.username}</MDBTypography>
+                        <MDBCardText>{profile.position}</MDBCardText>
                         <MDBIcon onClick={()=>window.alert("Edit")} far icon="edit mb-5" />
                       </MDBCol>
                       <MDBCol md="8">
@@ -42,23 +66,23 @@ const HSettings = () => {
                           <MDBRow className="pt-1">
                             <MDBCol size="12" className="mb-4">
                               <MDBTypography tag="h6">Username</MDBTypography>
-                              <MDBCardText className="text-muted">John</MDBCardText>
+                              <MDBCardText className="text-muted">{profile.username}</MDBCardText>
                             </MDBCol>
                             <MDBCol size="12" className="mb-4">
                               <MDBTypography tag="h6">Email</MDBTypography>
-                              <MDBCardText className="text-muted">info@example.com</MDBCardText>
+                              <MDBCardText className="text-muted">{profile.email}</MDBCardText>
                             </MDBCol>
                             <MDBCol size="12" className="mb-4">
                               <MDBTypography tag="h6">Phone</MDBTypography>
-                              <MDBCardText className="text-muted">123 456 789</MDBCardText>
+                              <MDBCardText className="text-muted">{profile.mobile}</MDBCardText>
                             </MDBCol>
                             <MDBCol size="12" className="mb-4">
                               <MDBTypography tag="h6">Role</MDBTypography>
-                              <MDBCardText className="text-muted">HOD</MDBCardText>
+                              <MDBCardText className="text-muted">Manager</MDBCardText>
                             </MDBCol>
                           </MDBRow>
 
-                          <MDBBtn onClick={()=>window.alert("Change Password")} rounded className='mb-4' color='info'>
+                          <MDBBtn onClick={()=>window.location.href="/change-password"} rounded className='mb-4' color='info'>
                             Change Password
                           </MDBBtn>
 

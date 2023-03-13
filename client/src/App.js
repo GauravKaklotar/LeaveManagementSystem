@@ -3,10 +3,16 @@ import {Routes, Route, useNavigate} from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
+import OTP from "./pages/OTP";
 import PageNotFound from './pages/PageNotFound';
 import Sidebar from './pages/Sidebar';
 import Home from './pages/Home';
 import Navbar from './pages/Employees/Navbar';
+import {ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import ChangePassword from './pages/ChangePassword';
+
 
 import NewLeave from './pages/Employees/NewLeave';
 import PendingLeave from './pages/Employees/PendingLeave';
@@ -16,9 +22,7 @@ import Leave from './pages/Employees/Leave';
 import RejectedLeave from './pages/Employees/RejectedLeave';
 import Dashboard from './pages/Employees/Dashboard';
 import AcceptedLeave from './pages/Employees/AcceptedLeave';
-
-
-
+import EditLeave from './pages/Employees/EditLeave';
 
 import HDashboard from './pages/HOD/HDashboard';
 import HLeave from './pages/HOD/HLeave';
@@ -26,6 +30,7 @@ import HPendingLeave from './pages/HOD/HPendingLeave';
 import HRejectedLeave from './pages/HOD/HRejectedLeave';
 import HAcceptedLeave from './pages/HOD/HAcceptedLeave';
 import HSettings from './pages/HOD/HSettings';
+import HEmployees from './pages/HOD/HEmployees';
 
 
 import ADashboard from './pages/Admin/ADashboard';
@@ -41,54 +46,25 @@ import AAddEmployee from './pages/Admin/AAddEmployee';
 
 export default function App() {
 
-  // const navigate = useNavigate();
-
-  // const callAuth = async () => {
-  //   try {
-  //     const res = await fetch('/', {
-  //       method: 'GET',
-  //       headers: {
-  //         Accept: 'application/json',
-  //         "Content-Type": "application/json",
-  //       },
-
-  //       credentials: 'include',
-
-  //     });
-
-  //     const data = await res.json();
-  //     console.log(data);
-
-  //     if(!res.status===200) {
-  //       throw new Error(res.error);
-  //     }
-  //   }
-  //   catch(err) {
-  //     console.log(err);
-  //     navigate('/login');
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   callAuth();
-  // }, []);
-
 
   return (
    <>
+   <ToastContainer />
     {/* <BrowserRouter> */}
       <Routes>
       {/* <Layout />   */}
         <Route path="/register" exact element={<Register />}></Route>
         <Route path="/login" exact element={<Login />}></Route>
         <Route path="/reset-password" exact element={<ForgotPassword />}></Route>
+        <Route path="/verifyOTP" exact element={<OTP />}></Route>
+        <Route path="/change-password" exact element={<ChangePassword />}></Route>
         <Route path="*" element={<PageNotFound />}></Route>
 
         // Employee
         <Route path="/" exact element={<Home />} />
         {/* <Route path="/" exact element={<Dashboard />} /> */}
         {/* <Route path="/employee" exact element={<Navbar />} /> */}
-        <Route path="/dashboard" element={<Dashboard />}></Route>
+        <Route path="/dashboard" exact element={<Dashboard />}></Route>
         <Route path="/settings" exact element={<Settings />}></Route>
         <Route path="/leave" exact element={<Leave />}></Route>
         <Route path="/new-leave" exact element={<NewLeave />}></Route>
@@ -96,6 +72,7 @@ export default function App() {
         <Route path="/rejected-leave" exact element={<RejectedLeave />}></Route>
         <Route path="/accepted-leave" exact element={<AcceptedLeave />}></Route>
         <Route path="/track-leave" exact element={<TrackLeave />}></Route>
+        <Route path="/edit-leave/:id" exact element={<EditLeave />}></Route>
 
 
         // HOD
@@ -106,6 +83,7 @@ export default function App() {
         <Route path="/HRejectedLeave" exact element={<HRejectedLeave />} />
         {/* <Route path="/HNewLeave" exact element={<HDashboard />} /> */}
         <Route path="/HSettings" exact element={<HSettings />} />
+        <Route path="/HEmployees" exact element={<HEmployees />} />
 
 
         // Admin
