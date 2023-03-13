@@ -31,8 +31,8 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   ...theme.mixins.toolbar,
 }));
 
-function createData(uname, leaveType, noOfDays, startDate, hodStatus, adminStatus) {
-  return { uname, leaveType, noOfDays, startDate, hodStatus, adminStatus };
+function createData(leaveId, uname, leaveType, noOfDays, startDate, hodStatus, adminStatus) {
+  return { leaveId, uname, leaveType, noOfDays, startDate, hodStatus, adminStatus };
 }
 
 
@@ -92,6 +92,7 @@ const HLeave = () => {
 
   const rows = leaves.map((leave) => {
     return createData(
+      leave.rest._id,
       leave.username,
       leave.leaveTypeName,
       leave.rest.numOfDays,
@@ -156,7 +157,7 @@ const HLeave = () => {
                           {row.adminStatus === "Approved" && <TableCell align="center" sx={{ color: 'green' }}>{row.adminStatus}</TableCell>}
                           {row.adminStatus === "Rejected" && <TableCell align="center" sx={{ color: 'red' }}>{row.adminStatus}</TableCell>}
                           <TableCell align="center">
-                            <Button aria-label="edit" onClick={() => window.alert("Edit")}>
+                            <Button aria-label="edit" onClick={() => window.location.href = '/HEditLeave/' + row.leaveId}>
                               <EditIcon />
                             </Button>
                             <Button aria-label="delete" onClick={() => window.alert("Delete")}>

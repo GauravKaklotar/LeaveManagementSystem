@@ -93,13 +93,16 @@ const getLeave = async function (req, res) {
       res.json({ error: "Leave doesn't exists" });
     }
     else{
-      const {leaveType } = leave;
+      const {leaveType, userId } = leave;
       const leaveTypeData = await leaveTypeModel.findOne({
         _id: leaveType,
       });
       const leaveTypeName = leaveTypeData.leaveTypeName;
+      const userData = await employees.findOne({_id : userId});
+      const username = userData.username;
+
       const { password, ...rest } = leave.toObject();
-      res.json({rest, leaveTypeName});
+      res.json({rest, leaveTypeName, username});
     }
   } catch (error) {
     console.log(error);

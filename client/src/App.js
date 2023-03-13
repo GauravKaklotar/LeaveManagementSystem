@@ -31,7 +31,7 @@ import HRejectedLeave from './pages/HOD/HRejectedLeave';
 import HAcceptedLeave from './pages/HOD/HAcceptedLeave';
 import HSettings from './pages/HOD/HSettings';
 import HEmployees from './pages/HOD/HEmployees';
-
+import HEditLeave from './pages/HOD/HEditLeave';
 
 import ADashboard from './pages/Admin/ADashboard';
 import ALeave from './pages/Admin/ALeave';
@@ -84,6 +84,7 @@ export default function App() {
         {/* <Route path="/HNewLeave" exact element={<HDashboard />} /> */}
         <Route path="/HSettings" exact element={<HSettings />} />
         <Route path="/HEmployees" exact element={<HEmployees />} />
+        <Route path="/HEditLeave/:id" exact element={<HEditLeave />}></Route>
 
 
         // Admin

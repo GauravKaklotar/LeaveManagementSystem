@@ -251,7 +251,7 @@ export default function EditLeave() {
             <MDBValidationItem tooltip feedback='Please enter a leave reason.' invalid className='col-md-12'>
               <JoditEditor
                 value={editorContent}
-                config={{ readonly: false }}
+                // config={{ readonly: false }}
                 tabIndex={1}
                 // onBlur={(newContent) => setEditorContent(newContent)}
                 onChange={(newContent) => setEditorContent(newContent)}

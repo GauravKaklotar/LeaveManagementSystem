@@ -64,6 +64,7 @@ const center = {
   left: "30%",
 };
 
+
 export default function Register() {
 
   // const history = useNavigate();
