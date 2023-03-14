@@ -145,10 +145,10 @@ const HEmployees = () => {
                           <TableCell align="center">{row.position}</TableCell>
                           <TableCell align="center">{row.mobile}</TableCell>
                           <TableCell align="center">
-                            <Button aria-label="edit" onClick={() => window.alert("Edit")}>
+                            <Button aria-label="edit" disabled onClick={() => window.alert("Edit")}>
                               <EditIcon />
                             </Button>
-                            <Button aria-label="delete" onClick={() => window.alert("Delete")}>
+                            <Button aria-label="delete" disabled onClick={() => window.alert("Delete")}>
                               <DeleteIcon />
                             </Button>
                           </TableCell>

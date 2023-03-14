@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import {Routes, Route, useNavigate} from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import ForgotPassword from "./pages/ForgotPassword";
+import SentEmail from './pages/SentEmail';
 import OTP from "./pages/OTP";
 import PageNotFound from './pages/PageNotFound';
 import Sidebar from './pages/Sidebar';
@@ -12,6 +12,7 @@ import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import ChangePassword from './pages/ChangePassword';
+import ForgetPassword from './pages/ForgetPassword';
 
 
 import NewLeave from './pages/Employees/NewLeave';
@@ -55,9 +56,11 @@ export default function App() {
       {/* <Layout />   */}
         <Route path="/register" exact element={<Register />}></Route>
         <Route path="/login" exact element={<Login />}></Route>
-        <Route path="/reset-password" exact element={<ForgotPassword />}></Route>
-        <Route path="/verifyOTP" exact element={<OTP />}></Route>
+        <Route path="/reset-password" exact element={<SentEmail />}></Route>
+        <Route path="/verifyOTP/:email" exact element={<OTP />}></Route>
         <Route path="/change-password" exact element={<ChangePassword />}></Route>
+        <Route path="/forget-password/:email/:otp" exact element={<ForgetPassword />}></Route>
+        
         <Route path="*" element={<PageNotFound />}></Route>
 
         // Employee

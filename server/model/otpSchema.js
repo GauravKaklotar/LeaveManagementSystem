@@ -17,7 +17,7 @@ const otpSchema = new mongoose.Schema({
     },
     otpExpires : {
         type: Number,
-        default: Date.now() + 300000, //5 min
+        default: Date.now() + 60000, //1 min
         required: true,
     },
     otpUsed : {

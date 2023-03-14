@@ -1,7 +1,6 @@
-// import { React} from 'react';
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import bg from "./bg/email.svg";
+import bg from "./bg/forgetPassword.svg";
 import bgimg from "./bg/backimg.jpg";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -10,20 +9,21 @@ import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { useState, forwardRef } from "react";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import { useState, forwardRef, useEffect } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import Stack from "@mui/material/Stack";
-import MuiAlert from "@mui/material/Alert";
+// import MuiAlert from "@mui/material/Alert";
 import Slide from "@mui/material/Slide";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-
-// import { MuiOtpInput } from 'mui-one-time-password-input'
-
-const Alert = forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
+// const Alert = forwardRef(function Alert(props, ref) {
+//   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+// });
 
 const darkTheme = createTheme({
   palette: {
@@ -45,17 +45,17 @@ const boxstyle = {
 const center = {
   position: "relative",
   top: "50%",
-  left: "30%",
+  left: "37%",
 };
 
-export default function ForgotPassword() {
-
-
+export default function ForgetPassword() {
+  const {email, otp} = useParams(); 
   const [open, setOpen] = useState(false);
-  // const [remember, setRemember] = useState(false);
+  const [remember, setRemember] = useState(false);
   const vertical = "top";
   const horizontal = "right";
   const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -63,9 +63,32 @@ export default function ForgotPassword() {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (e) => {
+    console.log(e);
+
+    const {password, cPassword} = e
+    const res = await fetch(`/api/resetPassword/${email}/${otp}`, {
+      method : "post",
+      headers: { 
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        password, cPassword
+      })
+    });
+
+    const data = await res.json();
     console.log(data);
-    setOpen(true);
+    if(data.message)
+    {
+      toast.success(data.message);
+      navigate("/login");
+    }
+    else
+    {
+      toast.error(data.error);
+      navigate(`/verifyOTP/${email}`);
+    }
   };
 
   const handleClose = (event, reason) => {
@@ -79,20 +102,8 @@ export default function ForgotPassword() {
     return <Slide {...props} direction="left" />;
   }
 
-
   return (
     <>
-      <Snackbar
-        open={open}
-        autoHideDuration={3000}
-        onClose={handleClose}
-        TransitionComponent={TransitionLeft}
-        anchorOrigin={{ vertical, horizontal }}
-      >
-        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
-          OTP has been sent to your email.
-        </Alert>
-      </Snackbar>
       <div
         style={{
           backgroundImage: `url(${bgimg})`,
@@ -130,12 +141,12 @@ export default function ForgotPassword() {
                     <Box height={35} />
                     <Box sx={center}>
                       <Avatar
-                        sx={{ ml: "85px", mb: "4px", bgcolor: "#ffffff" }}
+                        sx={{ ml: "35px", mb: "4px", bgcolor: "#ffffff" }}
                       >
                         <LockOutlinedIcon />
                       </Avatar>
-                      <Typography component="h1" variant="h4">
-                        Reset Password
+                      <Typography sx={{ml:"-35px", mt:"5px", mb:'10px'}} component="h1" variant="h5">
+                        New Password
                       </Typography>
                     </Box>
                     <Box sx={{ mt: 2 }} />
@@ -143,15 +154,33 @@ export default function ForgotPassword() {
                       <Grid container spacing={1}>
                         <Grid item xs={12} sx={{ ml: "3em", mr: "3em" }}>
                           <TextField
-                            {...register("email", { required: true })}
                             fullWidth
-                            id="email"
-                            label="Email"
-                            name="email"
-                            autoComplete="email"
-                            // required
+                            {...register("password", { required: true })}
+                            name="password"
+                            label="Password"
+                            type="password"
+                            id="password"
+                            autoComplete="new-password"
                           />
-                          {errors.email && (
+                          {errors.password && (
+                            <span
+                              style={{ color: "#f7d643", fontSize: "12px" }}
+                            >
+                              This field is required
+                            </span>
+                          )}
+                        </Grid>
+                        <Grid item xs={12} sx={{ ml: "3em", mr: "3em" }}>
+                          <TextField
+                            fullWidth
+                            {...register("cPassword", { required: true })}
+                            name="cPassword"
+                            label="Confirm Password"
+                            type="password"
+                            id="password"
+                            autoComplete="new-password"
+                          />
+                          {errors.cPassword && (
                             <span
                               style={{ color: "#f7d643", fontSize: "12px" }}
                             >
@@ -163,11 +192,10 @@ export default function ForgotPassword() {
                           <Button
                             type="submit"
                             variant="contained"
-                            fullWidth="true"
+                            fullWidth={true}
                             size="large"
-                            onClick={navigate("/verifyOTP")}
                             sx={{
-                              mt: "15px",
+                              mt: "10px",
                               mr: "20px",
                               borderRadius: 28,
                               color: "#ffffff",
@@ -175,39 +203,19 @@ export default function ForgotPassword() {
                               backgroundColor: "#FF9A01",
                             }}
                           >
-                            Send OTP
+                            Submit
                           </Button>
-                        </Grid>
-                        <Grid item xs={12} sx={{ ml: "3em", mr: "3em" }}>
-                          <Stack direction="row" spacing={2}>
-                            <Typography
-                              variant="body1"
-                              component="span"
-                              style={{ marginTop: "10px" }}
-                            >
-                              Login to your Account.
-                              <span
-                                style={{ color: "#beb4fb", cursor: "pointer" }}
-                                onClick={() => {
-                                  navigate("/login");
-                                }}
-                              >
-                                {" "}
-                                Sign In
-                              </span>
-                            </Typography>
-                          </Stack>
                         </Grid>
                       </Grid>
                     </form>
                   </Container>
                 </ThemeProvider>
               </Box>
+                    
             </Grid>
           </Grid>
         </Box>
       </div>
-
     </>
   );
 }

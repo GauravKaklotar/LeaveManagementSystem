@@ -15,7 +15,11 @@ import {
     MDBTextArea,
 } from 'mdb-react-ui-kit';
 
-// import  {MDBSelect}  from "mdbreact";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+// import { MDBSelect } from 'mdb-react-ui-kit';
 
 import { Typography } from '@mui/material';
 import HNavbar from './HNavbar';
@@ -47,7 +51,7 @@ const options = [
 
 export default function HEditLeave() {
 
-    const [selectedOption, setSelectedOption] = useState("");
+    const [selectedOption, setSelectedOption] = useState('');
 
     const { id } = useParams();
     console.log(id);
@@ -73,6 +77,17 @@ export default function HEditLeave() {
     // 	[placeholder]
     // );
 
+        const handleChangeForHOD = (event) => {
+        // errors.position = event.target.value;
+        // formValue.hodStatus = event.target.value;
+        setFormValue({...formValue, hodStatus: event.target.value});
+      };
+
+      const handleChangeForAdmin = (event) => {
+        // errors.position = event.target.value;
+        // formValue.adminStatus = event.target.value;
+        setFormValue({...formValue, adminStatus: event.target.value});
+      };
 
 
     const [formValue, setFormValue] = useState({
@@ -83,7 +98,7 @@ export default function HEditLeave() {
         startDate: '',
         leaveReason: '',
         hodRemark: '',
-        adminRemark: 'Done',
+        adminRemark: '',
         adminStatus: '',
         hodStatus: '',
     });
@@ -92,11 +107,11 @@ export default function HEditLeave() {
 
     const [plainTextContents, setPlainTextContents] = useState("");
 
-    const [username, setusername] = useState('');
-
     const onChange = (e) => {
         setFormValue({ ...formValue, [e.target.name]: e.target.value });
     };
+
+    formValue.hodRemark = editorContent;
 
 
     useEffect(async () => {
@@ -152,14 +167,18 @@ export default function HEditLeave() {
                 noOfDays: data.rest.numOfDays,
                 LeaveType: data.leaveTypeName,
                 startDate: formattedDate,
+                adminStatus: data.rest.adminStatus,
+                adminRemark: data.rest.adminRemark,
+                hodRemark: data.rest.hodRemark,
+                hodStatus: data.rest.hodStatus,
             });
 
             const msg = data.rest.leaveDetails;
+            setEditorContent(data.rest.hodRemark);
 
             const plainTextContent = msg.replace(/<[^>]+>/g, "");
             console.log(plainTextContent);
             setPlainTextContents(plainTextContent);
-            setEditorContent();
 
         }
         catch (err) {
@@ -171,11 +190,11 @@ export default function HEditLeave() {
 
         console.log(formValue);
 
-        const res = await fetch(("/api/leave/updateLeave/" + id), {
-            method: "PUT",
+        const res = await fetch(("/api/leave/updateStatusByHod/" + id), {
+            method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                password: formValue.password, leaveType: formValue.LeaveType, numOfDays: formValue.noOfDays, leaveDetails: formValue.leaveReason, leaveStartDate: formValue.startDate
+                password: formValue.password, leaveType: formValue.LeaveType, numOfDays: formValue.noOfDays, leaveStartDate: formValue.startDate, hodStatus: formValue.hodStatus, hodRemark: formValue.hodRemark
             })
         });
 
@@ -292,16 +311,45 @@ export default function HEditLeave() {
                                 label='Admin Remark'
                             />
                         </MDBValidationItem>
-                        {/* <MDBValidationItem tooltip feedback='Leave Reason is required' invalid className='col-md-6'>
-                            <MDBSelect
-                                options={options}
-                                selected={selectedOption}
-                                getValue={(value) => setSelectedOption(value)}
-                                color="primary"
-                                label="Select an option"
-                            />
-                        </MDBValidationItem> */}
-
+                        <MDBValidationItem tooltip feedback='Admin Status is required' invalid className='col-md-6'>
+                            <FormControl fullWidth>
+                                <InputLabel id="demo-simple-select-label" className='col-md-6'>
+                                    HR Status
+                                </InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={formValue.adminStatus}
+                                    label="Choose Status"
+                                    size="small"
+                                    disabled={true}
+                                    onChange={handleChangeForAdmin}
+                                >
+                                    <MenuItem value="Pending">Pending</MenuItem>
+                                    <MenuItem value="Rejected">Rejected</MenuItem>
+                                    <MenuItem value="Approved">Approved</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </MDBValidationItem>
+                        <MDBValidationItem tooltip feedback='Admin Status is required' invalid className='col-md-6'>
+                            <FormControl fullWidth>
+                                <InputLabel id="demo-simple-select-label" className='col-md-6'>
+                                    Manager Status
+                                </InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={formValue.hodStatus}
+                                    label="Choose Status"
+                                    size="small"
+                                    onChange={handleChangeForHOD}
+                                >
+                                    <MenuItem value="Pending">Pending</MenuItem>
+                                    <MenuItem value="Rejected">Rejected</MenuItem>
+                                    <MenuItem value="Approved">Approved</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </MDBValidationItem>
                         <MDBValidationItem tooltip feedback='Please enter a leave reason.' invalid className='col-md-12'>
                             <JoditEditor
                                 value={editorContent}

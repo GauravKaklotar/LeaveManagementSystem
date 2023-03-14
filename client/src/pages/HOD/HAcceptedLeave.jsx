@@ -18,6 +18,18 @@ import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
 import Button from "@material-ui/core/Button";
 
+import { toast } from 'react-toastify';
+
+
+import {
+  MDBModal,
+  MDBModalDialog,
+  MDBModalContent,
+  MDBModalHeader,
+  MDBModalTitle,
+  MDBModalBody,
+  MDBModalFooter,
+} from 'mdb-react-ui-kit';
 
 import { MDBBtn } from 'mdb-react-ui-kit';
 
@@ -31,8 +43,8 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   ...theme.mixins.toolbar,
 }));
 
-function createData(uname, leaveType, noOfDays, startDate, hodStatus, adminStatus) {
-  return { uname, leaveType, noOfDays, startDate, hodStatus, adminStatus };
+function createData(leaveId, uname, leaveType, noOfDays, startDate, hodStatus, adminStatus) {
+  return { leaveId, uname, leaveType, noOfDays, startDate, hodStatus, adminStatus };
 }
 
 
@@ -48,6 +60,11 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 
 const HAcceptedLeave = () => {
+
+  const [centredModal, setCentredModal] = useState(false);
+  const toggleShow = () => setCentredModal(!centredModal);
+  const [leaveTypeId, setLeaveTypeId] = useState('');
+
   const navigate = useNavigate();
 
   const [leaves, setLeaves] = useState([]);
@@ -62,6 +79,28 @@ const HAcceptedLeave = () => {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
+  };
+
+  const handleDelete = async (id) => {
+    console.log(leaveTypeId);
+    const res = await fetch(`/api/leave/deleteLeave/${id}`, {
+      method: "DELETE",
+      headers: {
+        "content-type": "application/json",
+      }
+    });
+
+    const data = await res.json();
+    console.log(data);
+    if (data.error) {
+      toast.error(data.error);
+    }
+    else {
+      toast.success(data.message);
+      window.location.reload();
+    }
+
+    toggleShow();
   };
 
   useEffect(async () => {
@@ -92,6 +131,7 @@ const HAcceptedLeave = () => {
 
   const rows = leaves.map((leave) => {
     return createData(
+      leave.rest._id,
       leave.username,
       leave.leaveTypeName,
       leave.rest.numOfDays,
@@ -156,10 +196,13 @@ const HAcceptedLeave = () => {
                           {row.adminStatus === "Approved" && <TableCell align="center" sx={{ color: 'green' }}>{row.adminStatus}</TableCell>}
                           {row.adminStatus === "Rejected" && <TableCell align="center" sx={{ color: 'red' }}>{row.adminStatus}</TableCell>}
                           <TableCell align="center">
-                            <Button aria-label="edit" onClick={() => window.alert("Edit")}>
+                            <Button aria-label="edit" onClick={() => window.location.href = '/HEditLeave/' + row.leaveId}>
                               <EditIcon />
                             </Button>
-                            <Button aria-label="delete" onClick={() => window.alert("Delete")}>
+                            <Button aria-label="delete" onClick={() => {
+                              toggleShow();
+                              setLeaveTypeId(row.leaveId);
+                            }}>
                               <DeleteIcon />
                             </Button>
                           </TableCell>
@@ -184,6 +227,29 @@ const HAcceptedLeave = () => {
           </Paper>
         </Box>
       </Box>
+
+      {/* Delete */}
+      <MDBModal tabIndex='-1' show={centredModal} setShow={setCentredModal}>
+        <MDBModalDialog centered>
+          <MDBModalContent>
+            <MDBModalHeader>
+              <MDBModalTitle>Delete Leave</MDBModalTitle>
+              <MDBBtn className='btn-close' color='none' onClick={toggleShow}></MDBBtn>
+            </MDBModalHeader>
+            <MDBModalBody>
+              <p>
+                Are you sure you want to delete this leave?
+              </p>
+            </MDBModalBody>
+            <MDBModalFooter>
+              <MDBBtn color='secondary' onClick={toggleShow}>
+                Close
+              </MDBBtn>
+              <MDBBtn color='danger' onClick={() => handleDelete(leaveTypeId)}>Delete</MDBBtn>
+            </MDBModalFooter>
+          </MDBModalContent>
+        </MDBModalDialog>
+      </MDBModal>
     </>
   )
 }

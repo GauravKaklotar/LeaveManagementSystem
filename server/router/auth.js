@@ -50,7 +50,7 @@ router.get('/user/getUser',verifyUser.verifyUser, userController.getUser);
 router.put('/leave/updateLeave/:id', verifyUser.verifyUser, leaveController.updateLeave);
 //get leave -user/hod
 router.get('/leave/getLeave/:id', verifyUser.verifyUser, leaveController.getLeave);
-//delete leave -user
+//delete leave -user/hod
 router.delete('/leave/deleteLeave/:id', verifyUser.verifyUser, leaveController.deleteLeave);
 //update password-user/HOD
 router.put('/user/updatePassword',verifyUser.verifyUser, userController.updatePassword);
@@ -69,7 +69,8 @@ router.get('/leave/pendingLeavesByHod', verifyUser.verifyUser, leaveController.p
 router.get('/leave/rejectedLeavesByHod', verifyUser.verifyUser, leaveController.rejectedLeavesByHod);
 //all users -hod
 router.get('/user/allUsersByHod',verifyUser.verifyUser, userController.allUsersByHod);
-
+//updateStatus -hod
+router.post('/leave/updateStatusByHod/:id', verifyUser.verifyUser, leaveController.updateStatusByHod);
 
 
 // After admin logged in :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -133,9 +134,6 @@ router.put('/leave/updateLeaveByHod/:id', verifyUser.verifyUser, leaveController
 
 
 
-
-//updateStatus -hod
-router.post('/leave/updateStatusByHod/:id', verifyUser.verifyUser, leaveController.updateStatusByHod);
 //updateStatus -admin
 router.post('/leave/updateStatusByAdmin/:id', verifyUser.verifyUser, verifyUser.verifyAdmin, leaveController.updateStatusByHod);
 

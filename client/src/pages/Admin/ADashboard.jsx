@@ -31,8 +31,8 @@ const ADashboard = () => {
     ["Task", "Hours per Day"],
     ["Total", total],
     ["Rejected", rejected],
-    ["Approved", approved],
     ["Pending", pending],
+    ["Approved", approved],
   ];
   
    const dataForColumnChart = [

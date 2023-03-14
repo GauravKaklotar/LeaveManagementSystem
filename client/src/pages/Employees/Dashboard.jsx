@@ -32,8 +32,8 @@ const Dashboard = () => {
     ["Task", "Hours per Day"],
     ["Available", available],
     ["Rejected", rejected],
-    ["Approved", approved],
     ["Pending", pending],
+    ["Approved", approved],
   ];
   
    const dataForColumnChart = [

@@ -15,24 +15,10 @@ import Snackbar from "@mui/material/Snackbar";
 import Stack from "@mui/material/Stack";
 import MuiAlert from "@mui/material/Alert";
 import Slide from "@mui/material/Slide";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
-
+import { toast } from "react-toastify";
 import styled from 'styled-components';
-
-import OTPInput, { ResendOTP } from "otp-input-react";
-
-
-import {
-    MDBBtn,
-    MDBModal,
-    MDBModalDialog,
-    MDBModalContent,
-    MDBModalHeader,
-    MDBModalTitle,
-    MDBModalBody,
-    MDBModalFooter,
-} from 'mdb-react-ui-kit';
 
 
 // import { MuiOtpInput } from 'mui-one-time-password-input'
@@ -99,6 +85,8 @@ const center = {
 
 export default function OTP() {
 
+    const { email } = useParams();
+
     const [otp, setOtp] = useState('');
 
     const inputs = useRef([]);
@@ -109,7 +97,7 @@ export default function OTP() {
         const nextIndex = index + 1;
         const prevIndex = index - 1;
 
-        if (value.length === 1 && index < inputLength - 1) {
+        if (/^\d*$/.test(value) && value.length === 1 && index < inputLength - 1) {
             inputs.current[nextIndex].focus();
         } else if (value.length === 0 && index > 0) {
             inputs.current[prevIndex].focus();
@@ -117,7 +105,7 @@ export default function OTP() {
 
         const otp = inputs.current.map(input => input.value).join('');
         setOtp(otp);
-        console.log('OTP:', otp);
+        // console.log('OTP:', otp);
     };
 
     const handleOtpKeyDown = (index, event) => {
@@ -128,10 +116,27 @@ export default function OTP() {
         }
     };
 
-    const handleVerifyClick = () => {
+    const handleVerifyClick = async () => {
         console.log('OTP:', otp);
+        // navigate('/forget-password');
         // Do the verification logic here using the otp state
-      };    
+        const res = await fetch(`/api/verifyOtp/${email}/${otp}`, {
+            method: "GET",
+            headers: {
+                "content-type": "application/json",
+            },
+        });
+
+        const data = await res.json();
+        console.log(data);
+        if (data.error) {
+            toast.error(data.error);
+        }
+        else {
+            toast.success(data.message);
+            navigate(`/forget-password/${email}/${otp}`);
+        }
+    };
 
 
 
@@ -149,6 +154,25 @@ export default function OTP() {
         formState: { errors },
     } = useForm();
 
+    const sentOTP = async () => {
+
+        const res = await fetch(`/api/sendOtp/${email}`, {
+            method: "POST",
+            headers: {
+                "content-type": "application/json",
+            },
+        });
+
+        const data = await res.json();
+        console.log(data);
+        if (!data.message) {
+            toast.error(data.error);
+        }
+        else {
+            toast.success(data.message);
+        }
+    }
+
     const onSubmit = async (data) => {
         console.log(data);
         setOpen(true);
@@ -161,24 +185,11 @@ export default function OTP() {
         setOpen(false);
     };
 
-    function TransitionLeft(props) {
-        return <Slide {...props} direction="left" />;
-    }
+
 
 
     return (
         <>
-            <Snackbar
-                open={open}
-                autoHideDuration={3000}
-                onClose={handleClose}
-                TransitionComponent={TransitionLeft}
-                anchorOrigin={{ vertical, horizontal }}
-            >
-                <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
-                    OTP has been sent to your email.
-                </Alert>
-            </Snackbar>
             <div
                 style={{
                     backgroundImage: `url(${bgimg})`,
@@ -231,14 +242,33 @@ export default function OTP() {
                                                                 type="tel"
                                                                 inputMode="numeric"
                                                                 maxLength="1"
+                                                                required
                                                                 onChange={event => handleOtpChange(index, event)}
                                                                 onKeyDown={event => handleOtpKeyDown(index, event)}
                                                             />
-                                                            
+
                                                         ))}
                                                     </OtpContainer>
 
 
+                                                </Grid>
+                                                <Grid item xs={12} sx={{ ml: "3em", mr: "3em" }}>
+                                                    <Stack direction="row" spacing={2}>
+                                                        <Typography
+                                                            variant="body1"
+                                                            component="span"
+                                                            style={{ marginTop: "10px" }}
+                                                        >
+                                                            Didn't recieve code?
+                                                            <span
+                                                                style={{ color: "#beb4fb", cursor: "pointer" }}
+                                                                onClick={sentOTP}
+                                                            >
+                                                                {" "}
+                                                                Resend OTP
+                                                            </span>
+                                                        </Typography>
+                                                    </Stack>
                                                 </Grid>
                                                 <Grid item xs={12} sx={{ ml: "5em", mr: "5em" }}>
                                                     <Button

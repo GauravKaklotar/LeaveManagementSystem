@@ -70,6 +70,9 @@
       "last 1 safari version"
     ]
   },
+  "browser": {
+    "crypto": false
+  },
   "devDependencies": {
     "@iconify/react": "^4.1.0"
   }

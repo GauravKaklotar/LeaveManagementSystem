@@ -83,17 +83,7 @@ export default function Register() {
     resolver: yupResolver(schema),
   });
 
-  // const onSubmit = async (data) => {
-  //   Object.assign(data, { position: position });
-  //   console.log(data);
-  // };
-
   const onSubmit = async (e) => {
-    // e.preventDefault();
-
-    // Object.assign(e, { position: position });
-    // console.log(e.position);
-    // console.log(e);
     
     const { username, email, password, confirmpassword, mobile, position } = e;
     const res = await fetch("/api/register", {

@@ -86,10 +86,10 @@ const Leave = () => {
     }
     else {
       toast.success(data.message);
+      window.location.reload();
     }
 
     toggleShow();
-    window.location.reload();
   };
 
   const [leaves, setLeaves] = useState([]);
