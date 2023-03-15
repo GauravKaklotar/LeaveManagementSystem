@@ -102,7 +102,7 @@ export default function ANavbar() {
                                     <MySpan>HOD</MySpan>
                                 </MDBDropdownToggle>
                                 <MDBDropdownMenu>
-                                    <MDBDropdownItem link href="/AAddHOD">Add HOD</MDBDropdownItem>
+                                    <MDBDropdownItem link onClick={()=>toast.info("This Feature will be added soon.")}>Add HOD</MDBDropdownItem>
                                     <MDBDropdownItem link href='/AHODList'>HOD List</MDBDropdownItem>
                                 </MDBDropdownMenu>
                             </MDBDropdown>

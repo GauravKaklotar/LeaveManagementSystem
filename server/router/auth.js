@@ -93,6 +93,12 @@ router.get('/user/allUsers',verifyUser.verifyUser, verifyUser.verifyAdmin, userC
 router.get('/user/allhod',verifyUser.verifyUser, verifyUser.verifyAdmin, userController.allhod);
 //update password-admin
 router.put('/user/updatePasswordByAdmin',verifyUser.verifyUser, verifyUser.verifyAdmin ,userController.updatePassword);
+//updateStatus -admin
+router.post('/leave/updateStatusByAdmin/:id', verifyUser.verifyUser, verifyUser.verifyAdmin, leaveController.updateStatusByAdmin);
+//delete leave -admin
+router.delete('/leave/deleteLeaveByAdmin/:id', verifyUser.verifyUser, verifyUser.verifyAdmin, leaveController.deleteLeaveByAdmin);
+//delete user by admin
+router.delete('/user/deleteUser/:id',verifyUser.verifyUser, verifyUser.verifyAdmin, userController.deleteUser);
 
 
 
@@ -103,8 +109,6 @@ router.get('/user/getUserByAdmin/:id',verifyUser.verifyUser, verifyUser.verifyAd
 //update user-user
 router.put('/user/updateUser',verifyUser.verifyUser, userController.updateUser);
 //delete user by user-admin
-router.delete('/user/deleteUser/:id',verifyUser.verifyUser, verifyUser.verifyAdmin, userController.deleteUser);
-// //delete user by admin
 // router.delete('/user/deleteUser/:id', verifyUser.verifyAdmin, userController.deleteUser);
 
 
@@ -122,21 +126,9 @@ router.put('/leaveType/updateLeaveType/:id', verifyUser.verifyUser, verifyUser.v
 //leavetype all -admin
 router.delete('/leaveType/deleteLeaveType/:id', verifyUser.verifyUser, verifyUser.verifyAdmin, leaveTypeController.deleteLeaveType);
 
-//leave///
-
-//createleave -user/hod
-router.post('/leave/createLeave', verifyUser.verifyUser, leaveController.createLeave);
-
-
 
 //update leave -hod
 router.put('/leave/updateLeaveByHod/:id', verifyUser.verifyUser, leaveController.updateLeaveByHod);
-
-
-
-//updateStatus -admin
-router.post('/leave/updateStatusByAdmin/:id', verifyUser.verifyUser, verifyUser.verifyAdmin, leaveController.updateStatusByHod);
-
 
 
 module.exports = router;

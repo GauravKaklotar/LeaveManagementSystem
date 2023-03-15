@@ -234,7 +234,7 @@ const Leave = () => {
                             }}>
                               <DeleteIcon />
                             </Button>
-                            <Button aria-label="track" onClick={() => navigate('/track-leave')}>
+                            <Button aria-label="track" onClick={() => navigate(`/track-leave/${row.leaveId}`)}>
                               <DirectionsBikeIcon />
                             </Button>
                           </TableCell>

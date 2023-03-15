@@ -189,10 +189,12 @@ const getUserLeaveCounts = async function (req, res) {
       let total = 0,
         pending = 0,
         rejected = 0,
-        approved = 0;
+        approved = 0,
+        numOfDays = 0;
       leaves.map((leave) => {
         total += 1;
         if (leave.adminStatus === "Approved") {
+          numOfDays += leave.numOfDays;
           approved++;
         }
         if (leave.hodStatus === "Rejected") {
@@ -202,7 +204,7 @@ const getUserLeaveCounts = async function (req, res) {
           pending++;
         }
       });
-      res.json({ total, pending, approved, rejected });
+      res.json({ total, pending, approved, rejected, numOfDays });
     }
   } catch (error) {
     console.log(error);
@@ -504,8 +506,8 @@ const approvedLeaves = async function (req, res) {
 const rejectedLeaves = async function (req, res) {
   try {
     const leaves = await leaveModel.find({
-      userId: req.id,
-      hodStatus: "Rejected",
+      $or : [{hodStatus: "Rejected"}, {adminStatus : "Rejected"}],
+      userId: req.id
     });
     if (!leaves) {
       res.json({ error: "No rejected Leaves are there" });
@@ -719,7 +721,7 @@ const updateStatusByAdmin = async function (req, res) {
       if (!id) {
         res.json({ error: "No id in Params" });
       }
-      const { hodStatus, password, adminRemark } = req.body;
+      const { adminStatus, password, adminRemark } = req.body;
       const isPass = await bcrypt.compare(password, req.password);
       if (!isPass) {
         res.json({
@@ -728,7 +730,7 @@ const updateStatusByAdmin = async function (req, res) {
       }
       await leaveModel.findOneAndUpdate(
         { _id: id },
-        { hodStatus, adminRemark },
+        { adminStatus, adminRemark },
         { new: true }
       );
       res.json({ message: "Status Updated Successfully" });
@@ -739,6 +741,25 @@ const updateStatusByAdmin = async function (req, res) {
     console.log(error);
   }
 };
+
+const deleteLeaveByAdmin = async function (req, res) {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      res.json({ error: "Leave doesn't exists" });
+    }
+    const leave = await leaveModel.findOne({ _id: id });
+    if (!leave) {
+      res.json({ error: "Leave doesn't exists" });
+    } else {
+      await leaveModel.deleteOne({ _id: id });
+      res.json({ message: "Leave has been deleted !!" });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 
 module.exports = {
   createLeave,
@@ -763,4 +784,5 @@ module.exports = {
   approvedLeavesByAdmin,
   rejectedLeavesByAdmin,
   updateStatusByAdmin,
+  deleteLeaveByAdmin
 };

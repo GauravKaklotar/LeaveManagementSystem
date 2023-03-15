@@ -44,7 +44,7 @@ import AHODList from './pages/Admin/AHODList';
 import AEmployeeList from './pages/Admin/AEmployeeList';
 import AAddHOD from './pages/Admin/AAddHOD';
 import AAddEmployee from './pages/Admin/AAddEmployee';
-
+import AEditLeave from './pages/Admin/AEditLeave';
 export default function App() {
 
 
@@ -74,7 +74,7 @@ export default function App() {
         <Route path="/pending-leave" exact element={<PendingLeave />}></Route>
         <Route path="/rejected-leave" exact element={<RejectedLeave />}></Route>
         <Route path="/accepted-leave" exact element={<AcceptedLeave />}></Route>
-        <Route path="/track-leave" exact element={<TrackLeave />}></Route>
+        <Route path="/track-leave/:id" exact element={<TrackLeave />}></Route>
         <Route path="/edit-leave/:id" exact element={<EditLeave />}></Route>
 
 
@@ -101,7 +101,8 @@ export default function App() {
         <Route path="/AHODList" exact element={<AHODList />} />
         <Route path="/AAddEmployee" exact element={<AAddEmployee />} />
         <Route path="/AEmployeeList" exact element={<AEmployeeList />} />
-        
+        <Route path="/AEditLeave/:id" exact element={<AEditLeave />}></Route>
+
 
       </Routes>
     {/* </BrowserRouter> */}

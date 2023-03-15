@@ -7,6 +7,7 @@ const { ObjectId } = require("mongodb");
 const sendMail = require("../controller/mailer");
 const { use } = require("../router/auth");
 const jwt = require("jsonwebtoken");
+const leaveModel = require("../model/leaveSchema");
 
 const registerUser = async (req, res) => {
   const { username, email, password, cpassword, mobile, position } = req.body;
@@ -325,9 +326,7 @@ const verifyPassOtp = async function (req, res) {
     }
 
     const isExpire = await otpModel.findOne({
-      $and: [
-        { email: email, otp: otp, otpExpires: { $gt: Date.now() } },
-      ],
+      $and: [{ email: email}, {otp: otp}, {otpExpires: { $gt: Date.now() } }],
     });
     if (!isExpire) {
       await otpModel.deleteMany({ email: email });
@@ -396,14 +395,21 @@ const deleteUser = async function (req, res) {
     if (!id) {
       res.json({ error: "Invalid credential." });
     }
-    const objId = new ObjectId(id);
-    await employees.deleteOne({ _id: objId });
-    // await employees.deleteOne({email : email});
-    res.json({ message: "User deleted Successfully" });
+    else{
+      const objId = new ObjectId(id);
+      const user = await employees.findOne({_id : objId});
+      const email = user.email;
+      await employees.deleteOne({ _id: objId });  
+      await leaveModel.deleteMany({userId : id});
+      await otpModel.deleteMany({email : email});
+      // await employees.deleteOne({email : email});
+      res.json({ message: "User deleted Successfully" });
+    }
   } catch (error) {
     console.log(error);
   }
 };
+
 
 module.exports = {
   registerUser,

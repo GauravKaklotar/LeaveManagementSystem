@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 import { MDBCol, MDBBtn, MDBContainer, MDBRow, MDBCard, MDBCardText, MDBCardBody, MDBCardImage, MDBTypography, MDBIcon } from 'mdb-react-ui-kit';
 import './HSettings.css';
 import HNavbar from './HNavbar';
+import {toast} from 'react-toastify';
 
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -57,7 +58,7 @@ const HSettings = () => {
                           alt="Avatar" className="my-5" style={{ width: '80px' }} fluid />
                         <MDBTypography tag="h5">{profile.username}</MDBTypography>
                         <MDBCardText>{profile.position}</MDBCardText>
-                        <MDBIcon onClick={()=>window.alert("Edit")} far icon="edit mb-5" />
+                        <MDBIcon onClick={()=>toast.info('This Feature will available soon.')} far icon="edit mb-5" />
                       </MDBCol>
                       <MDBCol md="8">
                         <MDBCardBody className="p-4">

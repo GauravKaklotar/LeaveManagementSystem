@@ -22,7 +22,7 @@ import FormControl from "@mui/material/FormControl";
 // import { MDBSelect } from 'mdb-react-ui-kit';
 
 import { Typography } from '@mui/material';
-import HNavbar from './HNavbar';
+import ANavbar from './ANavbar';
 import { useParams } from 'react-router-dom';
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -34,22 +34,8 @@ const DrawerHeader = styled('div')(({ theme }) => ({
     ...theme.mixins.toolbar,
 }));
 
-const options = [
-    {
-        text: "Approved",
-        value: "approved",
-    },
-    {
-        text: "Rejected",
-        value: "rejected",
-    },
-    {
-        text: "Pending",
-        value: "pending",
-    },
-];
 
-export default function HEditLeave() {
+export default function AEditLeave() {
 
     const [selectedOption, setSelectedOption] = useState('');
 
@@ -105,15 +91,15 @@ export default function HEditLeave() {
 
     const [formattedStartDate, setFormattedStartDate] = useState("");
 
+    
     const [plainTextContents, setPlainTextContents] = useState("");
-
-    const [plainTextContentOfAdmin, setPlainTextContentOfAdmin] = useState("");
+    const [plainTextContentsOfHod, setPlainTextContentsOfHod] = useState("");
 
     const onChange = (e) => {
         setFormValue({ ...formValue, [e.target.name]: e.target.value });
     };
 
-    formValue.hodRemark = editorContent;
+    formValue.adminRemark = editorContent;
 
 
     useEffect(async () => {
@@ -176,15 +162,17 @@ export default function HEditLeave() {
             });
 
             const msg = data.rest.leaveDetails;
-            setEditorContent(data.rest.hodRemark);
+            setEditorContent(data.rest.adminRemark);
 
             const plainTextContent = msg.replace(/<[^>]+>/g, "");
             console.log(plainTextContent);
             setPlainTextContents(plainTextContent);
 
-            const msg2 = data.rest.adminRemark;
-            const plainTextConten2 = msg2.replace(/<[^>]+>/g, "");
-            setPlainTextContentOfAdmin(plainTextConten2);
+            const msg1 = data.rest.hodRemark;
+            const plainTextContent1 = msg1.replace(/<[^>]+>/g, "");
+            setPlainTextContentsOfHod(plainTextContent1);
+
+
 
         }
         catch (err) {
@@ -196,11 +184,11 @@ export default function HEditLeave() {
 
         console.log(formValue);
 
-        const res = await fetch(("/api/leave/updateStatusByHod/" + id), {
+        const res = await fetch(("/api/leave/updateStatusByAdmin/" + id), {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                password: formValue.password, leaveType: formValue.LeaveType, numOfDays: formValue.noOfDays, leaveStartDate: formValue.startDate, hodStatus: formValue.hodStatus, hodRemark: formValue.hodRemark
+                password: formValue.password, leaveType: formValue.LeaveType, numOfDays: formValue.noOfDays, leaveStartDate: formValue.startDate, hodStatus: formValue.hodStatus, hodRemark: formValue.hodRemark, adminRemark: formValue.adminRemark, adminStatus: formValue.adminStatus
             })
         });
 
@@ -219,7 +207,7 @@ export default function HEditLeave() {
 
     return (
         <>
-            <HNavbar />
+            <ANavbar />
             {/* <Box height={10 + "vh"} /> */}
             <Box sx={{ display: 'flex' }}>
                 <Box component="main" alignItems={'center'} sx={{ flexGrow: 1, p: 3, boxShadow: 5, mr: "2em", ml: "2em", mt: "2em" }}>
@@ -307,14 +295,14 @@ export default function HEditLeave() {
                         </MDBValidationItem>
                         <MDBValidationItem tooltip feedback='Leave Reason is required' invalid className='col-md-6'>
                             <MDBInput
-                                value={plainTextContentOfAdmin}
-                                name='adminRemark'
+                                value={plainTextContentsOfHod}
+                                name='hodRemark'
                                 className='mt-sm-2'
                                 type="textarea"
                                 id='validationCustom01'
                                 required
                                 disabled={true}
-                                label='Admin Remark'
+                                label='Manager Remark'
                             />
                         </MDBValidationItem>
                         <MDBValidationItem tooltip feedback='Admin Status is required' invalid className='col-md-6'>
@@ -328,7 +316,6 @@ export default function HEditLeave() {
                                     value={formValue.adminStatus}
                                     label="Choose Status"
                                     size="small"
-                                    disabled={true}
                                     onChange={handleChangeForAdmin}
                                 >
                                     <MenuItem value="Pending">Pending</MenuItem>
@@ -348,6 +335,7 @@ export default function HEditLeave() {
                                     value={formValue.hodStatus}
                                     label="Choose Status"
                                     size="small"
+                                    disabled={true}
                                     onChange={handleChangeForHOD}
                                 >
                                     <MenuItem value="Pending">Pending</MenuItem>

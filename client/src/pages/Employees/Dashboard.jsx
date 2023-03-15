@@ -59,6 +59,7 @@ const Dashboard = () => {
       }); 
   
       const data = await res.json();
+      console.log(data);
   
       if(data.Error)
       {
@@ -69,8 +70,16 @@ const Dashboard = () => {
       setApproved(data.approved);
       setPending(data.pending);
       setRejected(data.rejected);
-      const remain = 30-data.approved;
-      setAvailable(remain);
+      const remain = 30-data.numOfDays;
+      // setAvailable(remain);
+      if(remain < 0)
+      {
+        setAvailable(0);
+      }
+      else
+      {
+        setAvailable(remain);
+      }
     }
     catch(err)
     {

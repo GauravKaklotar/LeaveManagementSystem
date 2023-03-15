@@ -20,7 +20,19 @@ import { useEffect, useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import RButton from 'react-bootstrap/Button';
 
-import { MDBBtn } from 'mdb-react-ui-kit';
+import { toast } from 'react-toastify';
+
+
+import {
+  MDBBtn,
+  MDBModal,
+  MDBModalDialog,
+  MDBModalContent,
+  MDBModalHeader,
+  MDBModalTitle,
+  MDBModalBody,
+  MDBModalFooter,
+} from 'mdb-react-ui-kit';
 
 import Navbar from './Navbar';
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -33,8 +45,9 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 
-function createData(uname, leaveType, noOfDays, startDate, hodStatus, adminStatus) {
-  return { uname, leaveType, noOfDays, startDate, hodStatus, adminStatus };
+
+function createData(leaveId, uname, leaveType, noOfDays, startDate, hodStatus, adminStatus) {
+  return { leaveId, uname, leaveType, noOfDays, startDate, hodStatus, adminStatus };
 }
 
 
@@ -50,6 +63,12 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 
 const RejectedLeave = () => {
+
+  const [centredModal, setCentredModal] = useState(false);
+
+  const toggleShow = () => setCentredModal(!centredModal);
+
+  const [leaveTypeId, setLeaveTypeId] = useState('');
 
   const [leaves, setLeaves] = useState([]);
 
@@ -87,6 +106,7 @@ const RejectedLeave = () => {
 
   const rows = leaves.map((leave) => {
     return createData(
+      leave.rest._id,
       leave.username,
       leave.leaveTypeName,
       leave.rest.numOfDays,
@@ -124,7 +144,7 @@ const RejectedLeave = () => {
       <Box component="main" sx={{ flexGrow: 1, p: 3, boxShadow: 5, mr: "2em", ml: "2em", mt: "2em" }}>
         {/* <DrawerHeader /> */}
         <Typography gutterBottom variant="h5" component="div" fontWeight={700} sx={{ color: "#007bff", textAlign: "center" }}>
-          Rejected Leave
+          Rejected Leaves
         </Typography>
         <Box sx={{ height: 3 + "vh" }} />
         <form className='d-flex input-group w-auto col-md-4'>
@@ -163,20 +183,14 @@ const RejectedLeave = () => {
                           <TableCell align="center">{row.leaveType}</TableCell>
                           <TableCell align="center">{row.noOfDays}</TableCell>
                           <TableCell align="center">{row.startDate}</TableCell>
-                          {row.hodStatus === "Pending" && <TableCell align="center" sx={{color: 'blue'}}>{row.hodStatus}</TableCell>}
-                          {row.hodStatus === "Approved" && <TableCell align="center" sx={{color: 'green'}}>{row.hodStatus}</TableCell>}
-                          {row.hodStatus === "Rejected" && <TableCell align="center" sx={{color: 'red'}}>{row.hodStatus}</TableCell>}
-                          {row.adminStatus === "Pending" && <TableCell align="center" sx={{color: 'blue'}}>{row.adminStatus}</TableCell>}
-                          {row.adminStatus === "Approved" && <TableCell align="center" sx={{color: 'green'}}>{row.adminStatus}</TableCell>}
-                          {row.adminStatus === "Rejected" && <TableCell align="center" sx={{color: 'red'}}>{row.adminStatus}</TableCell>}
+                          {row.hodStatus === "Pending" && <TableCell align="center" sx={{ color: 'blue' }}>{row.hodStatus}</TableCell>}
+                          {row.hodStatus === "Approved" && <TableCell align="center" sx={{ color: 'green' }}>{row.hodStatus}</TableCell>}
+                          {row.hodStatus === "Rejected" && <TableCell align="center" sx={{ color: 'red' }}>{row.hodStatus}</TableCell>}
+                          {row.adminStatus === "Pending" && <TableCell align="center" sx={{ color: 'blue' }}>{row.adminStatus}</TableCell>}
+                          {row.adminStatus === "Approved" && <TableCell align="center" sx={{ color: 'green' }}>{row.adminStatus}</TableCell>}
+                          {row.adminStatus === "Rejected" && <TableCell align="center" sx={{ color: 'red' }}>{row.adminStatus}</TableCell>}
                           <TableCell align="center">
-                            {/* <Button aria-label="edit" data-backdrop="static" onClick={() => window.alert("edit")}>
-                              <EditIcon />
-                            </Button> */}
-                            {/* <Button aria-label="delete" onClick={() => window.alert("Delete")}>
-                              <DeleteIcon />
-                            </Button> */}
-                            <Button aria-label="track" onClick={() => navigate('/track-leave')}>
+                            <Button aria-label="track" onClick={() => navigate(`/track-leave/${row.leaveId}`)}>
                               <DirectionsBikeIcon />
                             </Button>
                           </TableCell>
@@ -201,6 +215,7 @@ const RejectedLeave = () => {
           </Paper>
         </Box>
       </Box>
+
     </>
   )
 }
